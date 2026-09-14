@@ -1,0 +1,71 @@
+/* ── Design Tokens — Deep Dark Charcoal & Emerald-Violet Palette ── */
+:root {
+  /* ── Typography ── */
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Courier New', monospace;
+
+  --type-display: 52px;
+  --type-h1: 36px;
+  --type-h2: 24px;
+  --type-h3: 18px;
+  --type-body: 16px;
+  --type-body-sm: 14px;
+  --type-caption: 12px;
+  --type-mono: 13px;
+
+  /* ── Colors: Deep Dark Charcoal & Emerald-Violet Tones ── */
+  --bg-primary: #0A0B0F;
+  --bg-secondary: #111318;
+  --bg-tertiary: #181B22;
+
+  --surface-elevated: rgba(10, 11, 15, 0.94);
+  --surface-card: #111318;
+  --surface-card-hover: #181B22;
+
+  --text-primary: #EAEAEA;
+  --text-secondary: #9DA3AE;
+  --text-tertiary: #656C7A;
+  --text-inverse: #0A0B0F;
+
+  /* Emerald & Violet Accents */
+  --accent-emerald: #10B981;
+  --accent-emerald-dark: #059669;
+  --accent-emerald-subtle: rgba(16, 185, 129, 0.12);
+
+  --accent-violet: #8B5CF6;
+  --accent-violet-dark: #6D28D9;
+  --accent-violet-subtle: rgba(139, 92, 246, 0.12);
+
+  /* Primary Accent Defaults */
+  --accent-primary: #34D399;
+  --accent-primary-subtle: rgba(52, 211, 153, 0.12);
+  --accent-secondary: #A78BFA;
+
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-medium: rgba(255, 255, 255, 0.15);
+  --border-accent: rgba(255, 255, 255, 0.3);
+
+  /* Spacing */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 60px;
+  --space-20: 72px;
+
+  /* Layout */
+  --container-max: 920px;
+  --nav-height: 64px;
+  --nav-height-mobile: 56px;
+  --border-radius-sm: 6px;
+  --border-radius-md: 8px;
+  --border-radius-lg: 12px;
+
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
