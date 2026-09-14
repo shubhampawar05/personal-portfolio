@@ -59,3 +59,7 @@ h1, h2, h3, h4 {
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
+
+[data-theme="light"] .type-display {
+  color: var(--text-primary);
+}
