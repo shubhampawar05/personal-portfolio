@@ -1,5 +1,7 @@
-/* Renderer Module: dynamic DOM rendering */
-import { heroData, aboutData, experienceData, skillsData, projectsData, achievementsData, contactData } from '../data/content.js';
+import {
+  heroData, heroTechStack, aboutData, experienceData, projectsData,
+  skillsData, aiLabData, exploringData, achievementsData, contactData
+} from '../data/content.js';
 import { getIcon } from '../icons/icons.js';
 
 export function renderPortfolio() {
@@ -8,273 +10,313 @@ export function renderPortfolio() {
   renderExperience();
   renderProjects();
   renderSkills();
+  renderAiLab();
+  renderExploring();
   renderAchievements();
   renderContact();
   renderFooter();
 }
 
 function renderHero() {
-  const container = document.querySelector('#hero');
-  if (!container) return;
+  const el = document.querySelector('#hero');
+  if (!el) return;
 
-  container.innerHTML = `
-    <div class="hero-profile-box reveal-element">
-      <div class="profile-avatar-wrapper">
-        <img src="./Profile.png" alt="${heroData.name}" loading="eager" />
-      </div>
-      <div class="profile-info-group">
-        <div style="display: flex; align-items: center; gap: 14px; flex-wrap: wrap;">
-          <h1 class="type-display" style="font-family: var(--font-display); font-size: 48px; font-weight: 400; line-height: 1.1; margin: 0; color: var(--text-primary);">${heroData.name}</h1>
-          <span class="status-badge"><span class="status-dot"></span> Open to Opportunities</span>
+  const techPills = heroTechStack.map(t =>
+    `<span class="tech-pill"><span class="tech-dot" style="background:${t.color}"></span>${t.name}</span>`
+  ).join('');
+
+  el.innerHTML = `
+    <div class="container">
+      <div class="hero-grid reveal-element">
+        <div class="hero-content">
+          <div class="hero-badges">
+            ${heroData.available ? '<span class="badge"><span class="badge-dot"></span>Available for opportunities</span>' : ''}
+            <span class="badge">${getIcon('sparkle')} ${heroData.title}</span>
+          </div>
+          <h1 class="type-display">
+            ${heroData.firstName} <span class="gradient-text">${heroData.lastName}</span>
+          </h1>
+          <p class="hero-location">${getIcon('mapPin')} ${heroData.location}</p>
+          <p class="hero-headline">${heroData.headline}</p>
+          <p class="tech-stack-label">Tech I work with</p>
+          <div class="tech-stack-row">${techPills}</div>
+          <div class="hero-cta">
+            <a href="#projects" class="btn-primary">${getIcon('arrowRight')} View Projects</a>
+            <a href="#contact" class="btn-secondary">Get in Touch</a>
+          </div>
         </div>
-        <p class="hero-tagline" style="font-family: var(--font-mono); font-size: 14px; color: var(--accent-secondary); margin: 4px 0 0;">${heroData.tagline}</p>
-        <div class="phonetic-subtitle">
-          <span class="devanagari">${heroData.sanskritName}</span>
-          <span class="phonetic">${heroData.phonetic}</span>
+        <div class="hero-image-wrapper">
+          <div class="hero-image-glow"></div>
+          <div class="hero-image-frame">
+            <img src="./Profile.png" alt="${heroData.name}" loading="eager" />
+            <span class="hero-image-badge">${heroData.title}</span>
+          </div>
         </div>
-        <p class="definition-text">
-          <em>adjective</em> &nbsp;·&nbsp; Sanskrit, <a href="${heroData.rootLink}" target="_blank" rel="noopener noreferrer" class="inline-link">${heroData.root}</a><br/>
-          <strong>1.</strong> ${heroData.meaning}
-        </p>
       </div>
     </div>
   `;
 }
 
 function renderAbout() {
-  const container = document.querySelector('#about');
-  if (!container) return;
+  const el = document.querySelector('#about');
+  if (!el) return;
 
-  const paragraphHtml = aboutData.paragraphs.map(p =>
-    `<p class="type-body" style="font-size: 16px; line-height: 1.7; color: var(--text-secondary); margin-bottom: var(--space-4);">${p}</p>`
+  const stats = aboutData.stats.map(s =>
+    `<div class="stat-item"><span class="stat-value">${s.value}</span><span class="stat-label">${s.label}</span></div>`
   ).join('');
 
-  const interestsHtml = aboutData.interests.map(item =>
-    `<span class="skill-chip-sm">${item}</span>`
-  ).join('');
-
-  container.innerHTML = `
-    <div class="reveal-element">
-      <span class="overline type-caption" style="display: block; margin-bottom: var(--space-3); color: var(--text-tertiary); letter-spacing: 0.08em;">ABOUT ME</span>
-      
-      ${paragraphHtml}
-
-      <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-6);">
-        ${interestsHtml}
+  el.innerHTML = `
+    <div class="container">
+      <div class="section-header reveal-element">
+        <span class="type-caption">About</span>
+        <h2 class="type-h1">Who I am</h2>
       </div>
-
-      <p class="type-body" style="font-size: 15px; line-height: 1.7; color: var(--text-secondary); margin-bottom: var(--space-6);">
-        You can reach me at <a href="mailto:${contactData.email}" class="inline-link">${contactData.email}</a> or find me on the platforms below.
-      </p>
-
-      <div class="social-buttons-row">
-        <a href="${contactData.linkedin}" target="_blank" rel="noopener noreferrer" class="social-pill-btn">
-          ${getIcon('linkedin')} <span>LinkedIn</span>
-        </a>
-        <a href="${contactData.github}" target="_blank" rel="noopener noreferrer" class="social-pill-btn">
-          ${getIcon('github')} <span>GitHub</span>
-        </a>
-        <a href="mailto:${contactData.email}" class="social-pill-btn">
-          ${getIcon('mail')} <span>Email</span>
-        </a>
+      <div class="about-grid reveal-element">
+        <div>
+          <p class="about-brand">${aboutData.brand}</p>
+          ${aboutData.paragraphs.map(p => `<p class="type-body" style="margin-bottom:16px">${p}</p>`).join('')}
+        </div>
+        <div class="stats-row">${stats}</div>
       </div>
     </div>
   `;
 }
 
 function renderExperience() {
-  const container = document.querySelector('#experience .experience-list');
-  if (!container) return;
+  const el = document.querySelector('#experience');
+  if (!el) return;
 
-  const companyIconMap = {
-    'synthlane': 'synthlane',
-    'fibonacci': 'fibonacci'
-  };
-
-  container.innerHTML = experienceData.map(exp => {
-    const iconKey = Object.keys(companyIconMap).find(k => exp.company.toLowerCase().includes(k));
-    const iconName = iconKey ? companyIconMap[iconKey] : 'projectRepo';
-    return `
-    <div class="experience-timeline-item reveal-element">
-      <div class="experience-header-row">
-        <div class="company-logo-wrapper">
-          ${getIcon(iconName)}
-        </div>
-        <div style="flex-grow: 1;">
-          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
-            <h3 style="font-family: var(--font-display); font-size: 26px; font-weight: 500; color: var(--text-primary); margin: 0;">${exp.company}</h3>
-            <span class="type-body-sm" style="color: var(--text-tertiary); font-family: var(--font-mono); font-size: 13px;">${exp.duration}</span>
-          </div>
-          <p style="font-family: var(--font-body); font-size: 15px; font-weight: 500; color: var(--accent-secondary); margin-top: 2px; margin-bottom: 0;">${exp.role}${exp.location ? ` · ${exp.location}` : ''}</p>
-        </div>
+  const cards = experienceData.map(exp => {
+    const projects = exp.projects.map(p => `
+      <div class="exp-project">
+        <div class="exp-project-type">${p.type}</div>
+        <div class="exp-project-name">${p.name}</div>
+        <p class="type-body" style="font-size:0.9rem;margin-bottom:12px">${p.summary}</p>
+        <ul class="exp-highlights">${p.highlights.map(h => `<li>${h}</li>`).join('')}</ul>
+        <div class="tech-tags">${p.techStack.map(t => `<span class="tech-tag">${t}</span>`).join('')}</div>
       </div>
+    `).join('');
 
-      <div class="experience-body-content">
-        <p class="type-body" style="font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin-bottom: var(--space-4);">${exp.summary}</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 6px;">
-          ${exp.techStack.map(tech => `<span class="skill-chip-sm">${tech}</span>`).join('')}
+    return `
+      <div class="exp-card reveal-element">
+        <div class="exp-header">
+          <div>
+            <div class="exp-company">${exp.company}</div>
+            <div class="exp-role">${exp.role} · ${exp.location}</div>
+          </div>
+          <span class="exp-duration">${exp.duration}</span>
+        </div>
+        ${projects}
+      </div>
+    `;
+  }).join('');
+
+  el.innerHTML = `
+    <div class="container">
+      <div class="section-header reveal-element">
+        <span class="type-caption">Experience</span>
+        <h2 class="type-h1">Work History</h2>
+        <p class="section-subtitle">Building production software across fintech, marketing platforms, and B2B marketplaces.</p>
+      </div>
+      ${cards}
+    </div>
+  `;
+}
+
+function renderMockup() {
+  return `
+    <div class="mockup-ui">
+      <div class="mockup-bar">
+        <span class="mockup-dot"></span>
+        <span class="mockup-dot"></span>
+        <span class="mockup-dot"></span>
+      </div>
+      <div class="mockup-body">
+        <div class="mockup-line w-60"></div>
+        <div class="mockup-line w-80"></div>
+        <div class="mockup-blocks">
+          <div class="mockup-block"></div>
+          <div class="mockup-block"></div>
+        </div>
+        <div class="mockup-line w-40"></div>
+        <div class="mockup-line w-80"></div>
+        <div class="mockup-line w-60"></div>
+      </div>
+    </div>
+  `;
+}
+
+function renderFeaturedProject(p) {
+  const actions = [];
+  if (p.links.live) actions.push(`<a href="${p.links.live}" target="_blank" rel="noopener" class="btn-primary">${getIcon('external')} Live Demo</a>`);
+  if (p.links.demo) actions.push(`<a href="${p.links.demo}" target="_blank" rel="noopener" class="btn-outline">${getIcon('external')} App Demo</a>`);
+  if (p.links.github) actions.push(`<a href="${p.links.github}" target="_blank" rel="noopener" class="btn-outline">${getIcon('github')} GitHub</a>`);
+
+  return `
+    <div class="project-featured reveal-element">
+      <div class="project-featured-inner">
+        <div class="project-mockup">${renderMockup()}</div>
+        <div class="project-content">
+          <div class="project-content-header">
+            <h3 class="project-title">${p.title}</h3>
+            <span class="badge-featured">Featured</span>
+          </div>
+          <p class="project-tagline">${p.tagline}</p>
+          <ul class="project-highlights">${p.highlights.map(h => `<li>${h}</li>`).join('')}</ul>
+          <div class="project-tech-row">${p.technologies.map(t => `<span class="project-tech-pill">${t}</span>`).join('')}</div>
+          <div class="project-actions">${actions.join('')}</div>
         </div>
       </div>
     </div>
   `;
-  }).join('');
+}
+
+function renderProjectCard(p) {
+  return `
+    <div class="project-card reveal-element">
+      <div class="project-card-category">${p.category}</div>
+      <h3 class="type-h2" style="margin-bottom:8px">${p.title}</h3>
+      <p class="type-body" style="font-size:0.9rem;margin-bottom:16px">${p.tagline}</p>
+      <div class="tech-tags">${p.technologies.slice(0, 4).map(t => `<span class="tech-tag">${t}</span>`).join('')}</div>
+    </div>
+  `;
 }
 
 function renderProjects() {
-  const container = document.querySelector('#projects .project-list');
-  if (!container) return;
+  const el = document.querySelector('#projects');
+  if (!el) return;
 
-  const iconMap = {
-    'track-io': 'projectTrackIO',
-    'simple123': 'projectRepo',
-    'acumatic': 'projectEval'
-  };
+  const featured = projectsData.filter(p => p.featured);
+  const rest = projectsData.filter(p => !p.featured);
 
-  container.innerHTML = projectsData.map(project => {
-    const iconName = iconMap[project.id] || 'projectRepo';
-    return `
-    <div class="experience-timeline-item reveal-element">
-      <div class="experience-header-row">
-        <div class="company-logo-wrapper">
-          ${getIcon(iconName)}
-        </div>
-        <div style="flex-grow: 1;">
-          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
-            <h3 style="font-family: var(--font-display); font-size: 26px; font-weight: 500; color: var(--text-primary); margin: 0;">${project.title}</h3>
-            <span class="type-caption tag-secondary">${project.category}</span>
-          </div>
-          ${project.client ? `<p style="font-family: var(--font-body); font-size: 14px; font-weight: 500; color: var(--text-tertiary); margin-top: 2px; margin-bottom: 0;">${project.client}</p>` : ''}
-        </div>
+  el.innerHTML = `
+    <div class="container">
+      <div class="section-header reveal-element">
+        <span class="type-caption">Projects</span>
+        <h2 class="type-h1">Featured work</h2>
+        <p class="section-subtitle">Production-grade applications spanning SaaS, AI, and e-commerce.</p>
       </div>
-
-      <div class="experience-body-content">
-        <p class="type-body" style="font-size: 15px; line-height: 1.65; color: var(--text-secondary); margin-bottom: var(--space-4);">${project.description}</p>
-        <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: var(--space-3);">
-          ${project.technologies.map(tech => `<span class="skill-chip-sm">${tech}</span>`).join('')}
-        </div>
-        <p class="type-body-sm" style="color: var(--text-tertiary); display: flex; align-items: center; gap: 6px;">
-          <span style="color: var(--accent-secondary); font-weight: 500;">Impact:</span> <span>${project.impact}</span>
-        </p>
-      </div>
+      ${featured.map(renderFeaturedProject).join('')}
+      <div class="projects-grid">${rest.map(renderProjectCard).join('')}</div>
     </div>
   `;
-  }).join('');
 }
 
 function renderSkills() {
-  const featuredContainer = document.querySelector('#skills .skills-featured-row');
-  const container = document.querySelector('#skills .skill-list');
+  const el = document.querySelector('#skills');
+  if (!el) return;
 
-  if (featuredContainer) {
-    featuredContainer.innerHTML = `
-      <div class="featured-skills-box reveal-element" style="margin-bottom: var(--space-6);">
-        <span style="font-family: var(--font-mono); font-size: 12px; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.08em; display: block; margin-bottom: 10px;">CORE TECH STACKS</span>
-        <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-          ${skillsData.featured.map(item => `<span class="featured-skill-pill">${item}</span>`).join('')}
-        </div>
+  const grid = skillsData.categories.map(cat => `
+    <div class="skill-category reveal-element">
+      <div class="skill-category-label">${cat.label}</div>
+      <div class="skill-items">${cat.items.map(i => `<span class="skill-item">${i}</span>`).join('')}</div>
+    </div>
+  `).join('');
+
+  el.innerHTML = `
+    <div class="container">
+      <div class="section-header reveal-element">
+        <span class="type-caption">Engineering</span>
+        <h2 class="type-h1">Tech stack</h2>
+        <p class="section-subtitle">Technologies organized by engineering area — no arbitrary percentages.</p>
       </div>
-    `;
-  }
+      <div class="skills-grid">${grid}</div>
+    </div>
+  `;
+}
 
-  if (container) {
-    const categoryIconMap = {
-      languages: 'catLanguages',
-      frontend: 'catFrontend',
-      backend: 'catBackend',
-      databases: 'catDatabases',
-      aiTools: 'catAI',
-      devops: 'catInfra'
-    };
+function renderAiLab() {
+  const el = document.querySelector('#ai-lab');
+  if (!el) return;
 
-    const categoriesEntries = Object.entries(skillsData.categories);
-    container.innerHTML = categoriesEntries.map(([key, cat]) => {
-      const iconName = categoryIconMap[key] || 'catLanguages';
-      return `
-      <div class="experience-timeline-item reveal-element">
-        <div class="experience-header-row">
-          <div class="company-logo-wrapper">
-            ${getIcon(iconName)}
-          </div>
-          <div style="flex-grow: 1;">
-            <h3 style="font-family: var(--font-display); font-size: 24px; font-weight: 500; color: var(--text-primary); margin: 0;">${cat.label}</h3>
-          </div>
-        </div>
+  const cards = aiLabData.items.map(item => `
+    <div class="ai-card reveal-element">
+      <div class="ai-card-title">${item.title}</div>
+      <p class="ai-card-desc">${item.description}</p>
+    </div>
+  `).join('');
 
-        <div class="experience-body-content">
-          <div style="display: flex; flex-wrap: wrap; gap: 8px;">
-            ${cat.items.map(skill => `<span class="skill-chip">${skill}</span>`).join('')}
-          </div>
-        </div>
+  el.innerHTML = `
+    <div class="container">
+      <div class="section-header reveal-element">
+        <span class="type-caption">AI Lab</span>
+        <h2 class="type-h1">${aiLabData.title}</h2>
+        <p class="section-subtitle">${aiLabData.subtitle}</p>
       </div>
-    `;
-    }).join('');
-  }
+      <div class="ai-lab-grid">${cards}</div>
+    </div>
+  `;
+}
+
+function renderExploring() {
+  const el = document.querySelector('#exploring');
+  if (!el) return;
+
+  const cats = exploringData.categories.map(cat => `
+    <div class="reveal-element">
+      <div class="exploring-category-label">${cat.label}</div>
+      <div class="exploring-pills">${cat.items.map(i => `<span class="exploring-pill">${i}</span>`).join('')}</div>
+    </div>
+  `).join('');
+
+  el.innerHTML = `
+    <div class="container">
+      <div class="section-header reveal-element">
+        <span class="type-caption">Learning</span>
+        <h2 class="type-h1">${exploringData.title}</h2>
+      </div>
+      <div class="exploring-grid">${cats}</div>
+    </div>
+  `;
 }
 
 function renderAchievements() {
-  const container = document.querySelector('#achievements .achievements-list');
-  if (!container) return;
+  const el = document.querySelector('#achievements');
+  if (!el) return;
 
-  const achievementIconMap = {
-    '500+ DSA Problems': 'achieveTrophy',
-    'HackerRank 5★ Rating': 'achieveMedal',
-    'Geekathon Top Performer': 'achieveScholar'
-  };
+  const cards = achievementsData.map(a => `
+    <div class="achievement-card reveal-element">
+      <div class="achievement-title">${a.title}</div>
+      <div class="achievement-detail">${a.detail}</div>
+    </div>
+  `).join('');
 
-  container.innerHTML = achievementsData.map(ach => {
-    const iconName = achievementIconMap[ach.title] || 'achieveTrophy';
-    return `
-    <div class="experience-timeline-item reveal-element">
-      <div class="experience-header-row">
-        <div class="company-logo-wrapper">
-          ${getIcon(iconName)}
-        </div>
-        <div style="flex-grow: 1;">
-          <div style="display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 8px;">
-            <h3 style="font-family: var(--font-display); font-size: 24px; font-weight: 500; color: var(--text-primary); margin: 0;">${ach.title}</h3>
-            <span class="type-body-sm" style="color: var(--text-tertiary); font-family: var(--font-mono); font-size: 13px;">${ach.year}</span>
-          </div>
-          <p class="type-body" style="font-size: 15px; line-height: 1.6; color: var(--text-secondary); margin-top: 4px; margin-bottom: 0;">${ach.detail}</p>
-        </div>
+  el.innerHTML = `
+    <div class="container">
+      <div class="section-header reveal-element">
+        <span class="type-caption">Milestones</span>
+        <h2 class="type-h1">Achievements</h2>
       </div>
+      <div class="achievements-grid">${cards}</div>
     </div>
   `;
-  }).join('');
 }
 
 function renderContact() {
-  const container = document.querySelector('#contact .contact-content');
-  if (!container) return;
+  const el = document.querySelector('#contact');
+  if (!el) return;
 
-  container.innerHTML = `
-    <div class="reveal-element" style="text-align: center; max-width: 600px; margin: 0 auto; background: rgba(19, 21, 26, 0.45); border: 1px solid var(--border-subtle); border-radius: var(--border-radius-lg); padding: var(--space-8) var(--space-6);">
-      <h2 class="type-h1" style="margin-bottom: var(--space-3); font-family: var(--font-display); font-size: 36px; font-weight: 400;">Let's Connect</h2>
-      <p class="type-body" style="margin-bottom: var(--space-6); color: var(--text-secondary); line-height: 1.6;">
-        Building scalable full-stack applications & enterprise platforms. Reach out for opportunities, collaboration, or just to say hello.
-      </p>
-      <div style="display: flex; gap: var(--space-4); justify-content: center; align-items: center; flex-wrap: wrap;">
-        <a href="mailto:${contactData.email}" class="social-pill-btn pill-accent" style="padding: 10px 24px; font-size: 15px;">${getIcon('mail')} <span>Email Me</span></a>
-        <a href="${contactData.resume}" class="social-pill-btn pill-blue" download style="padding: 10px 24px; font-size: 15px;">${getIcon('download')} <span>Download Resume</span></a>
+  el.innerHTML = `
+    <div class="container">
+      <div class="contact-box reveal-element">
+        <h2 class="type-h1">Let's build something.</h2>
+        <p class="type-body">I'm open to interesting software engineering opportunities, collaborations, and conversations around building products.</p>
+        <div class="contact-actions">
+          <a href="mailto:${contactData.email}" class="btn-primary">${getIcon('mail')} Email Me</a>
+          <a href="${contactData.linkedin}" target="_blank" rel="noopener" class="social-link">${getIcon('linkedin')} LinkedIn</a>
+          <a href="${contactData.github}" target="_blank" rel="noopener" class="social-link">${getIcon('github')} GitHub</a>
+          <a href="${contactData.resume}" download class="social-link">${getIcon('download')} Resume</a>
+        </div>
       </div>
     </div>
   `;
 }
 
 function renderFooter() {
-  const container = document.querySelector('footer .container');
-  if (!container) return;
+  const el = document.querySelector('footer .footer-inner');
+  if (!el) return;
 
-  container.innerHTML = `
-    <div class="footer-content-centralized">
-      <blockquote class="footer-quote">
-        "The best way to predict the future is to build it."
-        <cite class="footer-author">— Peter Drucker</cite>
-      </blockquote>
-      <div class="footer-meta-row">
-        <span style="color: var(--text-tertiary); font-size: 13px;">© ${new Date().getFullYear()} Shubham Chopde</span>
-        <span class="footer-divider-dot">·</span>
-        <span style="color: var(--text-tertiary); font-size: 13px;">Built with Vite</span>
-      </div>
-    </div>
+  el.innerHTML = `
+    <p class="footer-brand">© ${new Date().getFullYear()} ${heroData.name} · Built with Vite</p>
   `;
 }

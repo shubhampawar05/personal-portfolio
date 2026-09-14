@@ -1,20 +1,37 @@
 export const heroData = {
   name: "Shubham Chopde",
-  sanskritName: "शुभम्",
-  phonetic: "/ʃubʱəm/",
-  root: "शुभ (śubha)",
-  rootLink: "https://en.wiktionary.org/wiki/%E0%A4%B6%E0%A5%81%E0%A4%AD",
-  meaning: "auspicious, fortunate, or good; one who brings positive outcomes.",
-  tagline: "Software Engineer · Gurugram, India"
+  firstName: "Shubham",
+  lastName: "Chopde",
+  title: "Full Stack Developer",
+  location: "Gurugram, India",
+  headline: "Building scalable SaaS products, modern web applications, and enterprise-grade solutions with React, Next.js, Node.js, and TypeScript.",
+  subheadline: "Software Engineer building scalable web applications and AI-powered products.",
+  available: true
 };
 
+export const heroTechStack = [
+  { name: "React", color: "#61DAFB" },
+  { name: "Next.js", color: "#FFFFFF" },
+  { name: "TypeScript", color: "#3178C6" },
+  { name: "Node.js", color: "#68A063" },
+  { name: "MongoDB", color: "#47A248" },
+  { name: "Tailwind CSS", color: "#38BDF8" },
+  { name: "Docker", color: "#2496ED" },
+  { name: "AWS", color: "#FF9900" }
+];
+
 export const aboutData = {
+  brand: "Build. Understand. Explore.",
   paragraphs: [
-    "I'm Shubham Chopde, a Software Engineer with 2+ years of experience building scalable web applications and enterprise platforms. I specialize in full-stack development — from React and Next.js frontends to Node.js backends — with hands-on experience in financial reporting workflows, data transformation, and AI-powered features.",
-    "Currently at Synthlane, I work on Accumatic (now Veramatic), a financial platform that transforms complex business documents into reliable financial outputs, and have migrated enterprise features across legacy and modern platforms. Previously at Fibonacci Innovative Solutions, I built B2B marketplace features for product comparison and bidding systems.",
-    "I'm passionate about clean architecture, performance optimization, and building products that solve real business problems."
+    "I'm a Software Engineer focused on building reliable, useful software. My background is in full-stack development — working across frontend applications, backend APIs, databases, data-processing workflows, and production systems.",
+    "I'm particularly interested in understanding how software works beneath the framework layer — from databases and networking to system design and distributed systems. More recently, I've been exploring LLMs, RAG, AI agents, and ways to integrate AI into real products.",
+    "I enjoy learning by building, breaking things, understanding why they work, and then building them better."
   ],
-  interests: ["Full-Stack Development", "React & Next.js", "AI-Powered Workflows", "Data Transformation", "System Design", "DSA & Problem Solving"]
+  stats: [
+    { value: "2+", label: "Years Experience" },
+    { value: "500+", label: "DSA Problems" },
+    { value: "5★", label: "HackerRank Rating" }
+  ]
 };
 
 export const experienceData = [
@@ -23,106 +40,147 @@ export const experienceData = [
     role: "Software Engineer",
     duration: "Aug 2025 – Present",
     location: "Gurugram",
-    summary: "Building and maintaining enterprise financial and marketing platforms. On Accumatic (now Veramatic), owned end-to-end delivery of customer reporting workflows — designing data pipelines that transform uploaded business documents into financial reports with customer-specific business rules. Led platform migrations when clients changed accounting systems. On Wunderkind, migrated the On-Demand Text Campaign feature from legacy Connect UI to the new platform using React and Redux, maintaining functional parity across complex multi-step campaign workflows.",
-    techStack: ["React", "Redux", "TypeScript", "Node.js", "REST APIs", "Data Transformation", "OpenAI APIs"]
+    projects: [
+      {
+        name: "Accumatic (Veramatic)",
+        type: "Financial Data & Reporting Platform",
+        summary: "Worked on financial-platform workflows that transformed document-based financial data into structured reporting outputs, with focus on data processing, business rules, and reliable production behavior.",
+        highlights: [
+          "Owned end-to-end customer reporting workflows from requirements to production",
+          "Designed data pipelines transforming business documents into financial reports",
+          "Led platform migrations when clients changed accounting systems"
+        ],
+        techStack: ["React", "Redux", "TypeScript", "Node.js", "REST APIs"]
+      },
+      {
+        name: "Wunderkind",
+        type: "Production Feature Migration",
+        summary: "Migrated the On-Demand Text Campaign feature from legacy Connect UI to the new platform while maintaining functional parity across complex campaign workflows.",
+        highlights: [
+          "Migrated production feature from legacy to modern React architecture",
+          "Integrated legacy APIs with data transformation for new platform",
+          "Collaborated with backend teams on API contracts and integration"
+        ],
+        techStack: ["React", "Redux", "TypeScript", "REST APIs"]
+      }
+    ]
   },
   {
     company: "Fibonacci Innovative Solutions",
     role: "Associate Software Engineer",
     duration: "Aug 2024 – Aug 2025",
     location: "Gurugram",
-    summary: "Developed features for Simple123, a B2B marketplace platform. Built product comparison and bidding systems, implemented dynamic product search and filtering, and created reusable UI components with a focus on frontend performance optimization.",
-    techStack: ["React.js", "JavaScript", "REST APIs", "MongoDB", "CSS3", "Performance Optimization"]
+    projects: [
+      {
+        name: "Simple123",
+        type: "B2B Marketplace",
+        summary: "Developed features for a B2B marketplace including product comparison, bidding systems, and dynamic search with advanced filtering.",
+        highlights: [
+          "Built product comparison and bidding system features",
+          "Implemented dynamic search and filtering with reusable components",
+          "Optimized frontend performance for responsive UI workflows"
+        ],
+        techStack: ["React.js", "JavaScript", "REST APIs", "MongoDB"]
+      }
+    ]
   }
 ];
-
-export const skillsData = {
-  featured: [
-    "JavaScript", "TypeScript", "React.js", "Next.js", "Node.js", "Redux", "MongoDB", "REST APIs", "OpenAI APIs", "Tailwind CSS"
-  ],
-  categories: {
-    languages: {
-      label: "Programming Languages",
-      items: ["JavaScript", "TypeScript", "Java", "HTML5", "CSS3", "SQL"]
-    },
-    frontend: {
-      label: "Frontend",
-      items: ["React.js", "Next.js", "Redux", "Zustand", "TanStack Query", "Tailwind CSS"]
-    },
-    backend: {
-      label: "Backend & APIs",
-      items: ["Node.js", "Express.js", "REST APIs", "JWT", "Webhooks", "Authentication", "RBAC"]
-    },
-    databases: {
-      label: "Databases",
-      items: ["MongoDB", "Mongoose", "SQL"]
-    },
-    aiTools: {
-      label: "AI & Dev Tools",
-      items: ["OpenAI APIs", "Speech-to-Text", "LLM Data Extraction", "Claude AI", "Cursor AI", "GitHub Copilot"]
-    },
-    devops: {
-      label: "DevOps & Tools",
-      items: ["Docker", "Kubernetes", "CI/CD", "AWS", "Git", "GitHub", "Jira", "Postman", "Swagger"]
-    }
-  }
-};
 
 export const projectsData = [
   {
     id: "track-io",
-    category: "Full-Stack SaaS",
+    featured: true,
+    category: "SaaS",
     title: "Track-IO",
-    client: "Personal Project",
-    description: "Built a Linear-style, multi-tenant issue tracking platform for product and engineering teams. Features organizations, projects, issues, comments, attachments, Kanban boards, and list views. Includes an OpenAI-powered meeting-to-issues workflow that transcribes audio, extracts structured task candidates with priorities and confidence scores, and lets users review before creating issues.",
-    technologies: ["Next.js", "Node.js", "Express", "MongoDB", "JWT", "OpenAI APIs", "RBAC"],
-    impact: "Modular architecture with org-level data isolation · AI-powered task extraction",
-    link: null
-  },
-  {
-    id: "simple123",
-    category: "B2B Marketplace",
-    title: "Simple123",
-    client: "Fibonacci Innovative Solutions",
-    description: "Developed core marketplace features including product comparison, bidding systems, and dynamic search with advanced filtering. Built reusable component architecture and optimized rendering performance for responsive UI workflows.",
-    technologies: ["React.js", "JavaScript", "REST APIs", "MongoDB", "CSS3"],
-    impact: "Production B2B marketplace serving enterprise clients",
-    link: null
+    tagline: "Issue tracker for engineering teams — org roles, Kanban, GitHub PR linking, and AI task extraction.",
+    description: "A Linear-inspired multi-tenant project management platform with workspace management, role-based access, issue workflows, Kanban boards, and AI-powered meeting-to-issues extraction.",
+    highlights: [
+      "Organization & role-based access",
+      "List pipeline & Kanban board",
+      "GitHub OAuth & PR linking",
+      "AI task extraction from notes"
+    ],
+    technologies: ["Next.js", "TypeScript", "Node.js", "MongoDB", "Tailwind CSS"],
+    links: {
+      live: "https://track-io-web.vercel.app/",
+      demo: "https://track-io-web.vercel.app/",
+      github: null
+    }
   },
   {
     id: "acumatic",
-    category: "FinTech Platform",
-    title: "Accumatic (Veramatic)",
-    client: "Synthlane",
-    description: "Engineered end-to-end data pipelines transforming complex business documents into accurate financial reports. Implemented customer-specific business rules, data normalization for accounting workflows, and led platform migrations when clients switched accounting systems.",
-    technologies: ["React", "Redux", "TypeScript", "Node.js", "REST APIs", "Data Pipelines"],
-    impact: "Automated financial reporting · Reduced manual processing effort",
-    link: null
+    featured: false,
+    category: "FinTech",
+    title: "Financial Data Platform",
+    tagline: "Production financial processing and reporting workflows at scale.",
+    description: "Engineered end-to-end data pipelines transforming complex business documents into accurate financial reports with customer-specific business rules.",
+    highlights: [
+      "Document-to-report data pipelines",
+      "Customer-specific business rules",
+      "Accounting system migration support"
+    ],
+    technologies: ["React", "Redux", "TypeScript", "Node.js", "REST APIs"],
+    links: { live: null, demo: null, github: null }
+  },
+  {
+    id: "wunderkind",
+    featured: false,
+    category: "Migration",
+    title: "Production Feature Migration",
+    tagline: "Modernizing a legacy product workflow for enterprise marketers.",
+    description: "Migrated On-Demand Text Campaign feature from legacy Connect UI to new platform, handling UI, API integration, and data transformation.",
+    highlights: [
+      "Legacy-to-modern React migration",
+      "Complex Redux state management",
+      "Zero-disruption production cutover"
+    ],
+    technologies: ["React", "Redux", "TypeScript", "REST APIs"],
+    links: { live: null, demo: null, github: null }
   }
 ];
 
+export const skillsData = {
+  categories: [
+    { label: "Frontend", items: ["React", "Next.js", "TypeScript", "Redux", "Tailwind CSS", "TanStack Query"] },
+    { label: "Backend", items: ["Node.js", "Express", "REST APIs", "JWT", "RBAC", "Webhooks"] },
+    { label: "Data", items: ["MongoDB", "PostgreSQL", "SQL", "Prisma", "Mongoose", "Redis"] },
+    { label: "Infrastructure", items: ["Docker", "AWS", "Kubernetes", "CI/CD", "Vercel", "Git"] },
+    { label: "AI", items: ["OpenAI APIs", "RAG", "LLM Apps", "Speech-to-Text", "Structured Extraction"] }
+  ]
+};
+
+export const aiLabData = {
+  title: "AI Lab",
+  subtitle: "Experiments, prototypes, and engineering explorations around LLMs, retrieval, voice interfaces, and AI-powered software.",
+  items: [
+    { title: "RAG", description: "Retrieval-Augmented Generation experiments for document Q&A and search." },
+    { title: "LLM Applications", description: "Building applications using modern language models and structured outputs." },
+    { title: "Structured Extraction", description: "Converting unstructured information into structured, actionable data." },
+    { title: "Speech-to-Text", description: "Exploring voice-driven software interfaces and meeting transcription." },
+    { title: "AI Agents", description: "Exploring tool-using and workflow-oriented AI systems." }
+  ]
+};
+
+export const exploringData = {
+  title: "Currently Exploring",
+  categories: [
+    { label: "System Design", items: ["Distributed Systems", "Caching", "Queues", "API Design"] },
+    { label: "Backend", items: ["PostgreSQL", "Prisma", "Redis", "BullMQ"] },
+    { label: "Infrastructure", items: ["Docker", "Kubernetes", "AWS", "Networking"] },
+    { label: "AI", items: ["RAG", "Vector DBs", "AI Agents", "Ollama"] }
+  ]
+};
+
 export const achievementsData = [
-  {
-    title: "500+ DSA Problems",
-    detail: "Solved 500+ data structures and algorithms problems on HackerRank and LeetCode",
-    year: "Ongoing"
-  },
-  {
-    title: "HackerRank 5★ Rating",
-    detail: "Achieved 5-star rating in Problem Solving on HackerRank",
-    year: "2024"
-  },
-  {
-    title: "Geekathon Top Performer",
-    detail: "Recognized as top performer in Geekathon coding competitions",
-    year: "2024"
-  }
+  { title: "500+ DSA Problems", detail: "Solved on HackerRank and LeetCode", icon: "trophy" },
+  { title: "HackerRank 5★", detail: "Problem Solving rating", icon: "medal" },
+  { title: "Geekathon", detail: "Top performer in coding competitions", icon: "star" }
 ];
 
 export const contactData = {
   email: "shubhamchopde090@gmail.com",
   phone: "+91-70899-71250",
-  linkedin: "https://www.linkedin.com/in/shubhamchopde",
+  linkedin: "https://www.linkedin.com/in/shubham-chopde05/",
   github: "https://github.com/ShubhamChopde",
   resume: "./Shubham_Chopde_Resume.pdf"
 };
