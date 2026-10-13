@@ -596,6 +596,58 @@
   border-bottom: 1px solid var(--border-subtle);
 }
 
+.project-mockup--image {
+  padding: var(--space-4);
+  background: #0b1220;
+}
+
+.project-preview-img {
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-subtle);
+  box-shadow: var(--shadow-card);
+  display: block;
+}
+
+.project-architecture {
+  margin-top: var(--space-6);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--border-subtle);
+  font-size: 0.9rem;
+}
+
+.project-architecture summary {
+  cursor: pointer;
+  color: var(--text-secondary);
+  font-weight: 600;
+  list-style: none;
+}
+
+.project-architecture summary::-webkit-details-marker {
+  display: none;
+}
+
+.project-architecture summary::after {
+  content: '+';
+  float: right;
+  color: var(--text-tertiary);
+}
+
+.project-architecture[open] summary::after {
+  content: '−';
+}
+
+.project-architecture-list {
+  margin-top: var(--space-3);
+  padding-left: 1.1rem;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 @media (min-width: 900px) {
   .project-mockup {
     border-bottom: none;

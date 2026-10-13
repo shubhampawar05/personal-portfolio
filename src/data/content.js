@@ -1,8 +1,17 @@
+export const siteMeta = {
+  url: "https://shubhampawar05.github.io/personal-portfolio/",
+  title: "Shubham Chopde — Software Engineer",
+  description:
+    "Software Engineer building scalable web applications, enterprise platforms, and AI-powered products.",
+  ogImage: "./og-cover.png",
+  jobTitle: "Software Engineer"
+};
+
 export const heroData = {
   name: "Shubham Chopde",
   firstName: "Shubham",
   lastName: "Chopde",
-  title: "Full Stack Developer",
+  title: "Software Engineer",
   location: "Gurugram, India",
   headline: "Building scalable SaaS products, modern web applications, and enterprise-grade solutions with React, Next.js, Node.js, and TypeScript.",
   subheadline: "Software Engineer building scalable web applications and AI-powered products.",
@@ -46,9 +55,9 @@ export const experienceData = [
         type: "Financial Data & Reporting Platform",
         summary: "Worked on financial-platform workflows that transformed document-based financial data into structured reporting outputs, with focus on data processing, business rules, and reliable production behavior.",
         highlights: [
-          "Owned end-to-end customer reporting workflows from requirements to production",
-          "Designed data pipelines transforming business documents into financial reports",
-          "Led platform migrations when clients changed accounting systems"
+          "Owned end-to-end customer reporting workflows from requirements through production support",
+          "Built document-to-report pipelines with customer-specific business rules and validation",
+          "Led accounting-system migrations with minimal disruption to live reporting schedules"
         ],
         techStack: ["React", "Redux", "TypeScript", "Node.js", "REST APIs"]
       },
@@ -57,9 +66,9 @@ export const experienceData = [
         type: "Production Feature Migration",
         summary: "Migrated the On-Demand Text Campaign feature from legacy Connect UI to the new platform while maintaining functional parity across complex campaign workflows.",
         highlights: [
-          "Migrated production feature from legacy to modern React architecture",
-          "Integrated legacy APIs with data transformation for new platform",
-          "Collaborated with backend teams on API contracts and integration"
+          "Shipped legacy-to-React migration for a production campaign workflow with functional parity",
+          "Bridged legacy APIs via transformation layers so the new UI could ship incrementally",
+          "Aligned with backend on API contracts and integration edge cases before cutover"
         ],
         techStack: ["React", "Redux", "TypeScript", "REST APIs"]
       }
@@ -76,9 +85,9 @@ export const experienceData = [
         type: "B2B Marketplace",
         summary: "Developed features for a B2B marketplace including product comparison, bidding systems, and dynamic search with advanced filtering.",
         highlights: [
-          "Built product comparison and bidding system features",
-          "Implemented dynamic search and filtering with reusable components",
-          "Optimized frontend performance for responsive UI workflows"
+          "Delivered comparison and bidding flows used across core marketplace purchase paths",
+          "Shipped reusable search and filter components shared across listing views",
+          "Improved UI responsiveness on data-heavy listing and detail screens"
         ],
         techStack: ["React.js", "JavaScript", "REST APIs", "MongoDB"]
       }
@@ -95,10 +104,17 @@ export const projectsData = [
     tagline: "Issue tracker for engineering teams — org roles, Kanban, GitHub PR linking, and AI task extraction.",
     description: "A Linear-inspired multi-tenant project management platform with workspace management, role-based access, issue workflows, Kanban boards, and AI-powered meeting-to-issues extraction.",
     highlights: [
-      "Organization & role-based access",
-      "List pipeline & Kanban board",
-      "GitHub OAuth & PR linking",
-      "AI task extraction from notes"
+      "Multi-tenant workspaces with organization roles and permission-aware UI",
+      "Issue list, pipeline, and Kanban views with shared workflow state",
+      "GitHub OAuth and PR linking for engineering issue traceability",
+      "AI-assisted task extraction from meeting notes into structured issues"
+    ],
+    previewImage: "./projects/track-io/dashboard.webp",
+    architecture: [
+      "Next.js App Router frontend with workspace-scoped routes and role-based access",
+      "Node.js REST APIs with MongoDB for orgs, issues, and workflow metadata",
+      "GitHub OAuth integration for linking pull requests to issues",
+      "AI extraction pipeline turning unstructured notes into actionable tasks"
     ],
     technologies: ["Next.js", "TypeScript", "Node.js", "MongoDB", "Tailwind CSS"],
     links: {

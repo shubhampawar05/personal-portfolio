@@ -43,6 +43,7 @@ function renderHero() {
           <div class="hero-cta">
             <a href="#projects" class="btn-primary">${getIcon('arrowRight')} View Projects</a>
             <a href="#contact" class="btn-secondary">Get in Touch</a>
+            <a href="${contactData.resume}" download class="btn-secondary">${getIcon('download')} Resume</a>
           </div>
         </div>
         <div class="hero-image-wrapper">
@@ -146,16 +147,43 @@ function renderMockup() {
   `;
 }
 
+function renderProjectPreview(p) {
+  if (p.previewImage) {
+    return `
+      <div class="project-mockup project-mockup--image">
+        <img
+          class="project-preview-img"
+          src="${p.previewImage}"
+          alt="${p.title} product screenshot"
+          loading="lazy"
+          width="1280"
+          height="720"
+        />
+      </div>
+    `;
+  }
+  return `<div class="project-mockup">${renderMockup()}</div>`;
+}
+
 function renderFeaturedProject(p) {
   const actions = [];
   if (p.links.live) actions.push(`<a href="${p.links.live}" target="_blank" rel="noopener" class="btn-primary">${getIcon('external')} Live Demo</a>`);
   if (p.links.demo) actions.push(`<a href="${p.links.demo}" target="_blank" rel="noopener" class="btn-outline">${getIcon('external')} App Demo</a>`);
   if (p.links.github) actions.push(`<a href="${p.links.github}" target="_blank" rel="noopener" class="btn-outline">${getIcon('github')} GitHub</a>`);
 
+  const architectureBlock = p.architecture?.length
+    ? `
+      <details class="project-architecture">
+        <summary>Architecture &amp; scope</summary>
+        <ul class="project-architecture-list">${p.architecture.map(item => `<li>${item}</li>`).join('')}</ul>
+      </details>
+    `
+    : '';
+
   return `
     <div class="project-featured reveal-element">
       <div class="project-featured-inner">
-        <div class="project-mockup">${renderMockup()}</div>
+        ${renderProjectPreview(p)}
         <div class="project-content">
           <div class="project-content-header">
             <h3 class="project-title">${p.title}</h3>
@@ -165,6 +193,7 @@ function renderFeaturedProject(p) {
           <ul class="project-highlights">${p.highlights.map(h => `<li>${h}</li>`).join('')}</ul>
           <div class="project-tech-row">${p.technologies.map(t => `<span class="project-tech-pill">${t}</span>`).join('')}</div>
           <div class="project-actions">${actions.join('')}</div>
+          ${architectureBlock}
         </div>
       </div>
     </div>
