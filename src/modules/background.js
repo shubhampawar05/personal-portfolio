@@ -8,7 +8,8 @@ export function initBackground() {
   let particles = [];
   let mouseX = -1000, mouseY = -1000;
 
-  const isReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const motionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const isReducedMotion = motionQuery.matches;
   const isMobile = window.innerWidth < 640;
   function getParticleCount() {
     const light = document.documentElement.getAttribute('data-theme') === 'light';
@@ -180,11 +181,25 @@ export function initBackground() {
     ctx.fillRect(0, 0, window.innerWidth, window.innerHeight);
   }
 
+  function drawStatic() {
+    drawBase();
+    drawGlow();
+    particles.forEach(p => p.draw());
+  }
+
   function loop() {
     drawBase();
     drawGlow();
     particles.forEach(p => { p.update(); p.draw(); });
     requestAnimationFrame(loop);
+  }
+
+  if (isReducedMotion) {
+    drawStatic();
+    motionQuery.addEventListener('change', () => {
+      if (!motionQuery.matches) loop();
+    });
+    return;
   }
 
   loop();
