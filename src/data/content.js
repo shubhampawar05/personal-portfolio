@@ -1,9 +1,9 @@
 export const siteMeta = {
-  url: "https://shubhampawar05.github.io/personal-portfolio/",
+  url: "https://www.shubhamchopde.in/",
   title: "Shubham Chopde — Software Engineer",
   description:
     "Software Engineer building scalable web applications, enterprise platforms, and AI-powered products.",
-  ogImage: "./og-cover.png",
+  ogImage: "https://www.shubhamchopde.in/og-cover.png",
   jobTitle: "Software Engineer"
 };
 
