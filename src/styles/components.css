@@ -1232,10 +1232,15 @@ footer {
 }
 
 /* ── Custom Cursor & Companion ── */
-@media (pointer: fine) {
-  body, a, button, input, select, textarea {
-    cursor: none !important;
-  }
+/* Hide the system cursor only once the custom cursor is actually running
+   (spaceship.js adds .has-custom-cursor), so no page is left without one. */
+.has-custom-cursor body,
+.has-custom-cursor a,
+.has-custom-cursor button,
+.has-custom-cursor input,
+.has-custom-cursor select,
+.has-custom-cursor textarea {
+  cursor: none !important;
 }
 
 #custom-cursor {

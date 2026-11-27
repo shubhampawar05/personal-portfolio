@@ -7,10 +7,12 @@ import './styles/components.css';
 import './styles/notes.css';
 
 import { initTheme } from './modules/theme.js';
+import { initSpaceshipCursor } from './modules/spaceship.js';
 import { inject } from '@vercel/analytics';
 
 inject();
 
 document.addEventListener('DOMContentLoaded', () => {
   initTheme();
+  initSpaceshipCursor();
 });

@@ -4,6 +4,8 @@ export function initSpaceshipCursor() {
   if (window.matchMedia('(pointer: coarse)').matches) return;
   if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
 
+  document.documentElement.classList.add('has-custom-cursor');
+
   const cursorDot = document.createElement('div');
   cursorDot.id = 'custom-cursor';
   cursorDot.innerHTML = `
