@@ -49,7 +49,7 @@ function renderHero() {
         <div class="hero-image-wrapper">
           <div class="hero-image-glow"></div>
           <div class="hero-image-frame">
-            <img src="./Profile.png" alt="${heroData.name}" loading="eager" />
+            <img src="./profile.webp" alt="${heroData.name}" loading="eager" fetchpriority="high" width="800" height="800" />
             <span class="hero-image-badge">${heroData.title}</span>
           </div>
         </div>
