@@ -224,6 +224,6 @@ export const contactData = {
   email: "shubhamchopde090@gmail.com",
   phone: "+91-70899-71250",
   linkedin: "https://www.linkedin.com/in/shubham-chopde05/",
-  github: "https://github.com/ShubhamChopde",
+  github: "https://github.com/shubhampawar05",
   resume: "./Shubham_Chopde_Resume.pdf"
 };
