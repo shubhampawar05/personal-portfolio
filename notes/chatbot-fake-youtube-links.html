@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My chatbot kept making up YouTube links — Shubham Chopde</title>
+  <meta name="description" content="How I stopped my persona chatbot from sharing fake video links, and the streaming bug I ran into after fixing it." />
+  <meta name="theme-color" content="#06080f" />
+  <meta name="author" content="Shubham Chopde" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="canonical" href="https://www.shubhamchopde.in/notes/chatbot-fake-youtube-links.html" />
+  <meta property="og:title" content="My chatbot kept making up YouTube links" />
+  <meta property="og:description" content="How I stopped my persona chatbot from sharing fake video links, and the streaming bug I ran into after fixing it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.shubhamchopde.in/notes/chatbot-fake-youtube-links.html" />
+  <meta property="og:image" content="https://www.shubhamchopde.in/og-cover.png" />
+  <meta property="article:published_time" content="2026-11-23" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="My chatbot kept making up YouTube links" />
+  <meta name="twitter:description" content="How I stopped my persona chatbot from sharing fake video links, and the streaming bug I ran into after fixing it." />
+  <meta name="twitter:image" content="https://www.shubhamchopde.in/og-cover.png" />
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "My chatbot kept making up YouTube links",
+  "description": "How I stopped my persona chatbot from sharing fake video links, and the streaming bug I ran into after fixing it.",
+  "datePublished": "2026-11-23",
+  "url": "https://www.shubhamchopde.in/notes/chatbot-fake-youtube-links.html",
+  "author": {
+    "@type": "Person",
+    "name": "Shubham Chopde",
+    "url": "https://www.shubhamchopde.in/"
+  }
+}
+  </script>
+</head>
+<body>
+  <header class="note-page-nav">
+    <div class="container nav-container">
+      <a href="../#notes" class="note-back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> All notes</a>
+      <div class="nav-actions">
+        <button class="theme-toggle" aria-label="Toggle theme" id="theme-toggle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="note-article">
+      <header>
+        <p class="note-meta"><time datetime="2026-11-23">Nov 23, 2026</time> · 4 min read · Shubham Chopde</p>
+        <h1>My chatbot kept making up YouTube links</h1>
+        <p class="note-lede">I built a chatbot with two coding-mentor personas that suggests YouTube videos. The first version gave links that looked real but weren't.</p>
+      </header>
+
+      <p>ChaiCode Mentors was an assignment in the GenAI cohort I was doing. It's a chat app with two personas based on the public teaching style of Hitesh Choudhary and Piyush Garg. You ask about code or your career, you get a short reply in Hinglish, and when it makes sense, a video from their own YouTube channel.</p>
+      <p>The video part is where I got stuck.</p>
+
+      <h2>The links were fake</h2>
+      <p>In the first version I simply asked the model to share a relevant video. It always gave a link, and the links looked perfect. But some of the video IDs didn't exist, some were real videos with one wrong character, and some were from a completely different channel. You only find out when you click.</p>
+      <p>Adding "only share real links" to the prompt didn't help at all. The model has no way of knowing which links are real. It only knows what a YouTube link looks like.</p>
+
+      <h2>Giving it a search tool</h2>
+      <p>So I gave the model a <code>searchYouTube</code> tool that only searches that mentor's own channels. The server calls the YouTube Data API, removes deleted or private videos, and sends the results back to the model.</p>
+      <p>Tool calling works as a loop. The model either answers, or asks for a tool. If it asks, the server runs the tool, adds the result to the chat, and calls the model again:</p>
+      <pre><code>for (let round = 0; round &lt; 3; round++) {
+  const reply = await callModel(messages, tools);
+  if (!reply.toolCalls.length) return reply;   // got the final answer
+  for (const call of reply.toolCalls) {
+    messages.push({ role: &#x27;tool&#x27;, tool_call_id: call.id, content: await runTool(call) });
+  }
+}
+throw new Error(&#x27;The model kept calling tools without answering.&#x27;);</code></pre>
+      <p>Two things I learned while building this. First, put a limit on the rounds, otherwise the model can keep calling tools and never answer. Second, if anything fails halfway, reset the chat history to what it was before that message. Otherwise a half-finished tool call stays in the history and breaks the next reply.</p>
+
+      <h2>Not giving it the URL at all</h2>
+      <p>Search fixed the made-up videos, but the model could still copy a URL wrong. So I stopped sending it URLs. The tool result only has the titles and a short ref for each video:</p>
+      <pre><code>{ ref: &quot;VIDEO_1&quot;, title: &quot;Complete Git and GitHub course&quot; }
+note: &quot;To share a video, write its ref exactly, e.g. {{VIDEO_1}}.
+       It becomes the real link automatically. Never write a URL yourself.&quot;</code></pre>
+      <p>The server keeps a map from <code>VIDEO_1</code> to the real video. When the reply comes back, it replaces <code>{{VIDEO_1}}</code> with a video card that has the real link and thumbnail. If the model writes a ref that doesn't exist, or types a YouTube URL anyway, that gets replaced with a link to the mentor's channel. So the UI never shows a broken link.</p>
+      <p>The way I think about it now: the model is good at picking which video fits the question. It's not good at copying an 11 character ID perfectly. So it picks, and my code fills in the actual link.</p>
+
+      <h2>Then streaming broke it</h2>
+      <p>Replies stream to the browser word by word. The problem is that tokens don't care about my <code>{{ }}</code> format, so a ref can arrive in two pieces:</p>
+      <pre><code>chunk 1: &quot;Yeh video dekho {{VID&quot;
+chunk 2: &quot;EO_1}}, isme sab hai&quot;</code></pre>
+      <p>If I send the first chunk straight to the browser, the user sees <code>{{VID</code> on the screen for a moment. The fix was to hold back any text after an unclosed <code>{{</code> until the <code>}}</code> arrives, and then send it with the ref already replaced. At the end the server also sends the final cleaned-up text and the browser swaps it in, so anything odd in the streamed version gets corrected anyway.</p>
+
+      <h2>A few other things</h2>
+      <ul>
+        <li>The two personas only started sounding different after I went through their public videos and posts and noted down phrases they actually use. A generic "talk like a friendly teacher" prompt made both of them sound the same.</li>
+        <li>Every message costs money, so each visitor gets a per-minute and per-day limit.</li>
+        <li>The app clearly says these are AI simulations and not the real people. Since they're real people, that felt important.</li>
+      </ul>
+
+      <footer class="note-footer">
+        <a href="https://github.com/shubhampawar05/ChaiCode-Mentors" target="_blank" rel="noopener" class="btn-outline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg> ChaiCode Mentors on GitHub</a>
+        <a href="../#notes" class="btn-outline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> More notes</a>
+      </footer>
+    </article>
+  </main>
+
+  <script type="module" src="/src/notes.js"></script>
+</body>
+</html>

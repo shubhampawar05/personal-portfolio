@@ -246,28 +246,28 @@ export const aiLabData = {
 
 export const notesData = {
   title: "Notes",
-  subtitle: "Short write-ups of things I learned while building — the decision, why, and what I'd do differently.",
+  subtitle: "Short notes on things I learned while building my projects, including the mistakes.",
   items: [
     {
-      slug: "what-i-learned-building-rag",
-      title: "What I learned building a simple RAG app",
+      slug: "first-rag-app-lessons",
+      title: "What I learned building my first RAG app",
       date: "2026-11-20",
-      readingTime: "5 min read",
-      summary: "Chunk sizes, why the embedding model must match, and why bad answers are usually a retrieval problem — lessons from building DocChat."
+      readingTime: "4 min read",
+      summary: "Notes from building DocChat: chunk sizes, using the same embedding model, and why bad answers were usually a retrieval problem."
     },
     {
-      slug: "never-let-the-llm-write-urls",
-      title: "Never let the LLM write URLs",
+      slug: "chatbot-fake-youtube-links",
+      title: "My chatbot kept making up YouTube links",
       date: "2026-11-23",
       readingTime: "4 min read",
-      summary: "How placeholder refs and a server-side swap stopped my persona chatbot from inventing YouTube links — and the streaming bug that came with it."
+      summary: "How I stopped my persona chatbot from sharing fake video links, and the streaming bug I ran into after fixing it."
     },
     {
-      slug: "reserve-then-settle-api-metering",
-      title: "Reserve, then settle: metering an API without overspending",
+      slug: "counting-api-usage",
+      title: "Counting API usage is harder than it looks",
       date: "2026-11-26",
-      readingTime: "5 min read",
-      summary: "Why checking the balance before a call isn't enough when requests run in parallel, and the two-step pattern NutriKit uses instead."
+      readingTime: "3 min read",
+      summary: "My first way of tracking API usage in NutriKit broke when requests came in at the same time. This is what I did instead."
     }
   ]
 };

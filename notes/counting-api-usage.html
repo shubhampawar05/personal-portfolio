@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Counting API usage is harder than it looks — Shubham Chopde</title>
+  <meta name="description" content="My first way of tracking API usage in NutriKit broke when requests came in at the same time. This is what I did instead." />
+  <meta name="theme-color" content="#06080f" />
+  <meta name="author" content="Shubham Chopde" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="canonical" href="https://www.shubhamchopde.in/notes/counting-api-usage.html" />
+  <meta property="og:title" content="Counting API usage is harder than it looks" />
+  <meta property="og:description" content="My first way of tracking API usage in NutriKit broke when requests came in at the same time. This is what I did instead." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.shubhamchopde.in/notes/counting-api-usage.html" />
+  <meta property="og:image" content="https://www.shubhamchopde.in/og-cover.png" />
+  <meta property="article:published_time" content="2026-11-26" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Counting API usage is harder than it looks" />
+  <meta name="twitter:description" content="My first way of tracking API usage in NutriKit broke when requests came in at the same time. This is what I did instead." />
+  <meta name="twitter:image" content="https://www.shubhamchopde.in/og-cover.png" />
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Counting API usage is harder than it looks",
+  "description": "My first way of tracking API usage in NutriKit broke when requests came in at the same time. This is what I did instead.",
+  "datePublished": "2026-11-26",
+  "url": "https://www.shubhamchopde.in/notes/counting-api-usage.html",
+  "author": {
+    "@type": "Person",
+    "name": "Shubham Chopde",
+    "url": "https://www.shubhamchopde.in/"
+  }
+}
+  </script>
+</head>
+<body>
+  <header class="note-page-nav">
+    <div class="container nav-container">
+      <a href="../#notes" class="note-back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> All notes</a>
+      <div class="nav-actions">
+        <button class="theme-toggle" aria-label="Toggle theme" id="theme-toggle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="note-article">
+      <header>
+        <p class="note-meta"><time datetime="2026-11-26">Nov 26, 2026</time> · 3 min read · Shubham Chopde</p>
+        <h1>Counting API usage is harder than it looks</h1>
+        <p class="note-lede">NutriKit gives every API key a monthly allowance. My first idea for counting usage had a race condition. This is what I ended up doing.</p>
+      </header>
+
+      <p>NutriKit is a nutrition API I built. You describe a meal in text, voice or a photo, and you get back the foods, portions and nutrients. Each API key has a monthly token allowance. A food search costs 1 token, and a photo can cost up to 20 because it calls an AI model.</p>
+      <p>I thought counting this would be the easy part.</p>
+
+      <h2>The simple version</h2>
+      <pre><code>const used = await getUsage(key);
+if (used + cost &gt; allowance) throw quotaExceeded();
+const result = await handleRequest();
+await addUsage(key, cost);</code></pre>
+      <p>Looks fine. The problem shows up when requests run at the same time, which is completely normal for an API. Say a key has 10 tokens left and sends ten photo requests together. All ten read <code>used</code> before any of them updates it. All ten pass the check. All ten call the AI model, and the key ends up way over its limit. And I'm the one paying for those AI calls.</p>
+
+      <h2>Reserve first</h2>
+      <p>The fix was to make the check and the update a single database statement. Before doing any work, a request reserves its cost, and the reservation only goes through if it still fits:</p>
+      <pre><code>INSERT INTO usage_periods AS p (subject, period_start, used)
+VALUES ($subject, $period, $cost)
+ON CONFLICT (subject, period_start) DO UPDATE
+  SET used = p.used + EXCLUDED.used
+  WHERE p.used + EXCLUDED.used &lt;= $limit
+RETURNING used;</code></pre>
+      <p>If no row comes back, the request gets a <code>429</code> and the handler never runs. Postgres applies the updates on that row one at a time, so out of ten parallel requests, only the ones that actually fit get through.</p>
+
+      <h2>Then settle the real cost</h2>
+      <p>The final cost isn't always what was reserved. AI calls depend on how many model tokens were used. One endpoint accepts either a photo or text, so it reserves the photo price and settles lower if it turns out to be text. After the request finishes, it adjusts the counter by the difference and writes the charge into a usage history table, both in one transaction.</p>
+
+      <h2>What should a failed request cost?</h2>
+      <p>This part needed more thinking than the code did.</p>
+      <p>If a request fails validation, times out, or the AI provider is down, the reservation is released and it costs nothing. But if the AI provider already did the work, for example it looked at the photo and decided it's not a nutrition label, those model tokens were really used. So those get charged, and the response includes an <code>X-Tokens-Charged</code> header that says how much.</p>
+      <p>I also wrote all of this down in the docs. If people get charged and can't see why, they stop trusting the API.</p>
+
+      <h2>Being able to fix it later</h2>
+      <p>The running counter is fast, but it can drift. If the server crashed between reserving and settling, the counter would stay a bit high. I'm fine with it going in that direction, because a counter that's too high never lets anyone overspend. And since every charge is also in the usage history, there's a reconcile command that rebuilds a month's counters from it.</p>
+
+      <h2>What I'll keep in mind</h2>
+      <p>Now, any time my code reads a value, makes a decision, and then writes, I stop and ask what happens if two requests do this at once. Usually the answer is to move the decision into one atomic query, and keep a history table so the fast number can always be rebuilt.</p>
+
+      <footer class="note-footer">
+        <a href="https://github.com/shubhampawar05/nutrikit" target="_blank" rel="noopener" class="btn-outline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg> NutriKit on GitHub</a>
+        <a href="../#notes" class="btn-outline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> More notes</a>
+      </footer>
+    </article>
+  </main>
+
+  <script type="module" src="/src/notes.js"></script>
+</body>
+</html>
