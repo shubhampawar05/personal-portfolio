@@ -192,9 +192,6 @@ function renderFeaturedProject(p) {
           </div>
           <p class="project-tagline">${p.tagline}</p>
           <ul class="project-highlights">${p.highlights.map(h => `<li>${h}</li>`).join('')}</ul>
-          ${p.learnings?.length ? `
-          <div class="project-card-learned">What I learned</div>
-          <ul class="project-highlights">${p.learnings.map(l => `<li>${l}</li>`).join('')}</ul>` : ''}
           <div class="project-tech-row">${p.technologies.map(t => `<span class="project-tech-pill">${t}</span>`).join('')}</div>
           <div class="project-actions">${actions.join('')}</div>
           ${architectureBlock}

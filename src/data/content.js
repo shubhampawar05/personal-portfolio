@@ -111,12 +111,6 @@ export const projectsData = [
       "GitHub OAuth and PR linking for engineering issue traceability",
       "AI-assisted task extraction from meeting notes into structured issues"
     ],
-    learnings: [
-      "Multi-tenancy is a middleware concern: every org-scoped request resolves its membership before it reaches a controller",
-      "Roles belong in the service layer, not just the UI — hiding a button isn't access control",
-      "Webhooks are public endpoints, so verify the HMAC signature on the raw body before trusting anything",
-      "Store board columns as data, not hardcoded UI, so workflows can change without a deploy"
-    ],
     previewImage: "./projects/track-io/dashboard.webp",
     architecture: [
       "Next.js App Router frontend with workspace-scoped routes and role-based access",
@@ -143,12 +137,6 @@ export const projectsData = [
       "Meal logging from text, voice and photos, plus barcode and nutrition-label scanning",
       "Meal plans for 6 diets and portion-aware nutrients (\"2 medium\", \"1.5 cups\")",
       "API keys, usage metering and Razorpay payments — published SDK as @nutrikit/sdk"
-    ],
-    learnings: [
-      "Metering needs reserve-then-settle: reserving a call's cost atomically up front stops parallel requests from overspending",
-      "Be honest about data: a \"bowl\" or \"katori\" has no standard weight, so the API labels its assumptions or asks for grams",
-      "Separate test keys with fixed AI answers let developers integrate without paying for model calls",
-      "Measure AI estimates with versioned benchmark sets instead of eyeballing a few outputs"
     ],
     previewImage: "./projects/nutrikit/home.webp",
     architecture: [
