@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>What I learned building my first RAG app — Shubham Chopde</title>
+  <meta name="description" content="Notes from building DocChat: chunk sizes, using the same embedding model, and why bad answers were usually a retrieval problem." />
+  <meta name="theme-color" content="#06080f" />
+  <meta name="author" content="Shubham Chopde" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="canonical" href="https://www.shubhamchopde.in/notes/first-rag-app-lessons.html" />
+  <meta property="og:title" content="What I learned building my first RAG app" />
+  <meta property="og:description" content="Notes from building DocChat: chunk sizes, using the same embedding model, and why bad answers were usually a retrieval problem." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.shubhamchopde.in/notes/first-rag-app-lessons.html" />
+  <meta property="og:image" content="https://www.shubhamchopde.in/og-cover.png" />
+  <meta property="article:published_time" content="2026-11-20" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="What I learned building my first RAG app" />
+  <meta name="twitter:description" content="Notes from building DocChat: chunk sizes, using the same embedding model, and why bad answers were usually a retrieval problem." />
+  <meta name="twitter:image" content="https://www.shubhamchopde.in/og-cover.png" />
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "What I learned building my first RAG app",
+  "description": "Notes from building DocChat: chunk sizes, using the same embedding model, and why bad answers were usually a retrieval problem.",
+  "datePublished": "2026-11-20",
+  "url": "https://www.shubhamchopde.in/notes/first-rag-app-lessons.html",
+  "author": {
+    "@type": "Person",
+    "name": "Shubham Chopde",
+    "url": "https://www.shubhamchopde.in/"
+  }
+}
+  </script>
+</head>
+<body>
+  <header class="note-page-nav">
+    <div class="container nav-container">
+      <a href="../#notes" class="note-back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> All notes</a>
+      <div class="nav-actions">
+        <button class="theme-toggle" aria-label="Toggle theme" id="theme-toggle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="note-article">
+      <header>
+        <p class="note-meta"><time datetime="2026-11-20">Nov 20, 2026</time> · 4 min read · Shubham Chopde</p>
+        <h1>What I learned building my first RAG app</h1>
+        <p class="note-lede">I built DocChat during a GenAI cohort. You upload a PDF and ask questions about it. Simple idea, but I got a lot of things wrong first.</p>
+      </header>
+
+      <p>DocChat lets you upload a PDF or text file and then chat with it. Answers only come from your file, with the page number after each fact. The stack is Node.js, Express, LangChain, OpenAI for embeddings and chat, and Qdrant as the vector DB.</p>
+      <p>It's a small project, but I got quite a few things wrong before it worked well. These are my notes from that.</p>
+
+      <h2>It's two flows, not one</h2>
+      <p>When I started, I thought of RAG as one long pipeline. It made a lot more sense once I split it into two parts that just share a database:</p>
+      <pre><code>INDEXING (once per file)               QUERYING (every question)
+file -&gt; load -&gt; split into chunks      question -&gt; embed -&gt; search Qdrant (top 5)
+     -&gt; embed (OpenAI) -&gt; store              -&gt; prompt + chunks -&gt; LLM -&gt; answer</code></pre>
+      <p>Indexing happens once per file. Querying happens on every question. Whenever something broke, the first thing I asked myself was "which half is this in?" That alone cleared up a lot of confusion.</p>
+
+      <h2>Chunk size matters more than I expected</h2>
+      <p>You can't embed a whole PDF as one vector. Embedding models have an input limit (around 8k tokens), and even if they didn't, one vector for a full document mixes every topic together. Search can't find the one paragraph you actually need.</p>
+      <p>I used LangChain's text splitter with 1000 character chunks and 200 characters of overlap. Smaller chunks matched more exactly but lost the context around the answer. Bigger ones kept context but matched loosely. 1000/200 was a good middle for the documents I tested with. The overlap is there so a sentence that gets cut at the end of one chunk is still complete in the next one.</p>
+      <pre><code>const splitter = new RecursiveCharacterTextSplitter({ chunkSize: 1000, chunkOverlap: 200 });</code></pre>
+      <p>One thing I'm glad I did early: for PDFs I create one document per page before splitting, and keep the page number in the metadata. That's the only reason the app can show "p. 3" later. If you lose it while loading the file, there's no way to get it back.</p>
+
+      <h2>Same embedding model on both sides</h2>
+      <p>Obvious once you know it. The question has to be embedded with the same model you used for the documents. Different models give vectors that can't be compared, and nothing throws an error. You just get bad matches and wonder why. So now the model name lives in one place and both parts read it from there.</p>
+
+      <h2>Bad answer? Check retrieval first</h2>
+      <p>Whenever an answer was wrong, my first reaction was to go and change the prompt. Most of the time the prompt wasn't the problem.</p>
+      <p>Qdrant returns a similarity score with every chunk, so I started logging those. If the scores are low, the right text never reached the model, and no prompt is going to fix that. It's the chunking, the question, or the document itself. If the scores look good and the answer is still wrong, then I look at the prompt.</p>
+      <p>Honestly this habit saved me more time than anything else in the project.</p>
+
+      <h2>Stopping it from making things up</h2>
+      <p>Even with the right chunks, the model will happily answer from its own knowledge if you let it. My system prompt tells it to use only the context it's given, to cite each fact as (file name, p. N), and to say clearly when the answer isn't in the documents. Temperature is 0, because here I want facts, not creativity.</p>
+      <p>I also wrap each chunk in a tag with its source, so the model can see where every piece came from:</p>
+      <pre><code>&lt;context&gt;
+&lt;excerpt id=&quot;1&quot; source=&quot;handbook.pdf, p. 3&quot;&gt;...&lt;/excerpt&gt;
+&lt;excerpt id=&quot;2&quot; source=&quot;handbook.pdf, p. 7&quot;&gt;...&lt;/excerpt&gt;
+&lt;/context&gt;</code></pre>
+      <p>For answer length, I first tried <code>maxTokens</code>. Bad idea. It's a hard cut, so the answer just stops in the middle of a sentence. Asking for a short answer in the prompt works much better, because the model plans for it. <code>maxTokens</code> is still there, but set higher, as a safety net and to cap the cost of each answer.</p>
+
+      <h2>Deploying it</h2>
+      <p>Locally, Qdrant runs in Docker. Render's free plan can't run that, so the live version uses Qdrant Cloud, which is why the DB URL and key come from environment variables. And since every question costs me OpenAI credits, the live site has a password and a rate limit. On localhost I never thought about cost. Once it was public, I had to.</p>
+
+      <h2>What I want to try next</h2>
+      <p>Basic RAG works well when the question is clear. It struggles with vague ones. In a later project I tried query rewriting, where one question gets turned into a broader version plus a few smaller sub-questions before searching. After that I want to try hybrid search (keywords plus vectors), reranking, and a small set of test questions, so I can actually measure whether a change helped instead of trying a few questions by hand.</p>
+
+      <footer class="note-footer">
+        <a href="https://github.com/shubhampawar05/GenAiSimple-RAG" target="_blank" rel="noopener" class="btn-outline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg> DocChat on GitHub</a>
+        <a href="../#notes" class="btn-outline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> More notes</a>
+      </footer>
+    </article>
+  </main>
+
+  <script type="module" src="/src/notes.js"></script>
+</body>
+</html>

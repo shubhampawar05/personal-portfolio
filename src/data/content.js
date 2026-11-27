@@ -13,7 +13,7 @@ export const heroData = {
   lastName: "Chopde",
   title: "Software Engineer",
   location: "Gurugram, India",
-  headline: "Building scalable SaaS products, modern web applications, and enterprise-grade solutions with React, Next.js, Node.js, and TypeScript.",
+  headline: "Full-stack engineer building SaaS products, developer APIs, and AI-powered apps — from React frontends and Node.js backends to RAG pipelines and LLM tool calling.",
   subheadline: "Software Engineer building scalable web applications and AI-powered products.",
   available: true
 };
@@ -26,7 +26,9 @@ export const heroTechStack = [
   { name: "MongoDB", color: "#47A248" },
   { name: "Tailwind CSS", color: "#38BDF8" },
   { name: "Docker", color: "#2496ED" },
-  { name: "AWS", color: "#FF9900" }
+  { name: "AWS", color: "#FF9900" },
+  { name: "OpenAI", color: "#10A37F" },
+  { name: "LangChain", color: "#7FC8A9" }
 ];
 
 export const aboutData = {
@@ -188,29 +190,83 @@ export const skillsData = {
     { label: "Backend", items: ["Node.js", "Express", "REST APIs", "JWT", "RBAC", "Webhooks"] },
     { label: "Data", items: ["MongoDB", "PostgreSQL", "SQL", "Prisma", "Mongoose", "Redis"] },
     { label: "Infrastructure", items: ["Docker", "AWS", "Kubernetes", "CI/CD", "Vercel", "Git"] },
-    { label: "AI", items: ["OpenAI APIs", "RAG", "LangChain", "Qdrant", "Tool Calling", "LLM Apps", "Speech-to-Text", "Structured Extraction"] }
+    { label: "AI", items: ["OpenAI APIs", "RAG", "LangChain", "Vector DBs (Qdrant)", "Embeddings", "Tool Calling", "Streaming", "Structured Extraction"] }
   ]
 };
 
 export const aiLabData = {
   title: "AI Lab",
-  subtitle: "Experiments, prototypes, and engineering explorations around LLMs, retrieval, voice interfaces, and AI-powered software.",
+  subtitle: "Smaller experiments and prototypes where I learn one idea at a time — each one is real code you can read.",
   items: [
-    { title: "RAG", description: "Retrieval-Augmented Generation experiments for document Q&A and search." },
-    { title: "LLM Applications", description: "Building applications using modern language models and structured outputs." },
-    { title: "Structured Extraction", description: "Converting unstructured information into structured, actionable data." },
-    { title: "Speech-to-Text", description: "Exploring voice-driven software interfaces and meeting transcription." },
-    { title: "AI Agents", description: "Exploring tool-using and workflow-oriented AI systems." }
+    {
+      title: "Advanced RAG Pipeline",
+      description: "Query rewriting (step-back questions and sub-queries) to improve retrieval, with document indexing moved to background workers.",
+      tags: ["Qdrant", "BullMQ", "Redis", "OpenAI"],
+      link: "https://github.com/shubhampawar05/advance-rag-pipeline"
+    },
+    {
+      title: "RAG Lab",
+      description: "Document Q&A with citations, storing embeddings in Postgres with pgvector on Supabase instead of a separate vector DB.",
+      tags: ["pgvector", "Supabase", "TypeScript"],
+      link: "https://github.com/shubhampawar05/ragAi"
+    },
+    {
+      title: "Agent from Scratch",
+      description: "A small tool-using agent in TypeScript — a builder for instructions and tools, and the loop that runs them — without an agent framework.",
+      tags: ["TypeScript", "OpenAI", "Tool Calling"],
+      link: "https://github.com/shubhampawar05/agent-sdk-poc"
+    },
+    {
+      title: "Prompting Fundamentals",
+      description: "Zero-shot, few-shot, chain-of-thought, and chain-of-thought with tools — side by side on the same task.",
+      tags: ["Prompt Engineering", "OpenAI"],
+      link: "https://github.com/shubhampawar05/ChaiCode-Mentors/tree/main/prompting"
+    },
+    {
+      title: "Company AI",
+      status: "In progress",
+      description: "An internal HR assistant built layer by layer — RAG, streaming, memory, MCP tools, RBAC, guardrails and evals — with an architecture decision record for every choice.",
+      tags: ["Python", "FastAPI", "pgvector", "MCP", "Keycloak"],
+      link: null
+    }
+  ]
+};
+
+export const notesData = {
+  title: "Notes",
+  subtitle: "Short notes on things I learned while building my projects, including the mistakes.",
+  items: [
+    {
+      slug: "first-rag-app-lessons",
+      title: "What I learned building my first RAG app",
+      date: "2026-11-20",
+      readingTime: "4 min read",
+      summary: "Notes from building DocChat: chunk sizes, using the same embedding model, and why bad answers were usually a retrieval problem."
+    },
+    {
+      slug: "chatbot-fake-youtube-links",
+      title: "My chatbot kept making up YouTube links",
+      date: "2026-11-23",
+      readingTime: "4 min read",
+      summary: "How I stopped my persona chatbot from sharing fake video links, and the streaming bug I ran into after fixing it."
+    },
+    {
+      slug: "counting-api-usage",
+      title: "Counting API usage is harder than it looks",
+      date: "2026-11-26",
+      readingTime: "3 min read",
+      summary: "My first way of tracking API usage in NutriKit broke when requests came in at the same time. This is what I did instead."
+    }
   ]
 };
 
 export const exploringData = {
   title: "Currently Exploring",
   categories: [
-    { label: "System Design", items: ["Distributed Systems", "Caching", "Queues", "API Design"] },
-    { label: "Backend", items: ["PostgreSQL", "Prisma", "Redis", "BullMQ"] },
-    { label: "Infrastructure", items: ["Docker", "Kubernetes", "AWS", "Networking"] },
-    { label: "AI", items: ["RAG", "Vector DBs", "AI Agents", "Ollama"] }
+    { label: "AI Engineering", items: ["AI Agents", "MCP", "Conversation Memory", "Guardrails", "Evals & Observability"] },
+    { label: "Backend", items: ["Python & FastAPI", "pgvector", "Job Queues (BullMQ)", "SSE Streaming"] },
+    { label: "System Design", items: ["Distributed Systems", "Caching", "Model Routing & Fallbacks", "API Design"] },
+    { label: "Infrastructure", items: ["Kubernetes", "AWS", "Networking", "Keycloak & RBAC"] }
   ]
 };
 
@@ -224,6 +280,6 @@ export const contactData = {
   email: "shubhamchopde090@gmail.com",
   phone: "+91-70899-71250",
   linkedin: "https://www.linkedin.com/in/shubham-chopde05/",
-  github: "https://github.com/ShubhamChopde",
+  github: "https://github.com/shubhampawar05",
   resume: "./Shubham_Chopde_Resume.pdf"
 };

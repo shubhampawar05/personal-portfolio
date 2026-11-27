@@ -1,6 +1,6 @@
 import {
   heroData, heroTechStack, aboutData, experienceData, projectsData,
-  skillsData, aiLabData, exploringData, achievementsData, contactData
+  skillsData, aiLabData, notesData, exploringData, achievementsData, contactData
 } from '../data/content.js';
 import { getIcon } from '../icons/icons.js';
 
@@ -11,6 +11,7 @@ export function renderPortfolio() {
   renderProjects();
   renderSkills();
   renderAiLab();
+  renderNotes();
   renderExploring();
   renderAchievements();
   renderContact();
@@ -49,7 +50,7 @@ function renderHero() {
         <div class="hero-image-wrapper">
           <div class="hero-image-glow"></div>
           <div class="hero-image-frame">
-            <img src="./Profile.png" alt="${heroData.name}" loading="eager" />
+            <img src="./profile.webp" alt="${heroData.name}" loading="eager" fetchpriority="high" width="800" height="800" />
             <span class="hero-image-badge">${heroData.title}</span>
           </div>
         </div>
@@ -273,12 +274,26 @@ function renderAiLab() {
   const el = document.querySelector('#ai-lab');
   if (!el) return;
 
-  const cards = aiLabData.items.map(item => `
+  const cards = aiLabData.items.map(item => {
+    const status = item.status ? `<span class="ai-card-status">${item.status}</span>` : '';
+    const tags = item.tags?.length
+      ? `<div class="tech-tags">${item.tags.map(t => `<span class="tech-tag">${t}</span>`).join('')}</div>`
+      : '';
+    const link = item.link
+      ? `<a href="${item.link}" target="_blank" rel="noopener" class="ai-card-link">${getIcon('github')} View code</a>`
+      : '';
+    return `
     <div class="ai-card reveal-element">
-      <div class="ai-card-title">${item.title}</div>
+      <div class="ai-card-head">
+        <div class="ai-card-title">${item.title}</div>
+        ${status}
+      </div>
       <p class="ai-card-desc">${item.description}</p>
+      ${tags}
+      ${link}
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   el.innerHTML = `
     <div class="container">
@@ -288,6 +303,37 @@ function renderAiLab() {
         <p class="section-subtitle">${aiLabData.subtitle}</p>
       </div>
       <div class="ai-lab-grid">${cards}</div>
+    </div>
+  `;
+}
+
+function formatNoteDate(iso) {
+  const [y, m, d] = iso.split('-').map(Number);
+  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  return `${months[m - 1]} ${d}, ${y}`;
+}
+
+function renderNotes() {
+  const el = document.querySelector('#notes');
+  if (!el) return;
+
+  const cards = notesData.items.map(n => `
+    <a class="note-card reveal-element" href="./notes/${n.slug}.html">
+      <div class="note-card-meta"><time datetime="${n.date}">${formatNoteDate(n.date)}</time> · ${n.readingTime}</div>
+      <h3 class="note-card-title">${n.title}</h3>
+      <p class="note-card-summary">${n.summary}</p>
+      <span class="note-card-read">Read note ${getIcon('arrowRight')}</span>
+    </a>
+  `).join('');
+
+  el.innerHTML = `
+    <div class="container">
+      <div class="section-header reveal-element">
+        <span class="type-caption">Writing</span>
+        <h2 class="type-h1">${notesData.title}</h2>
+        <p class="section-subtitle">${notesData.subtitle}</p>
+      </div>
+      <div class="notes-grid">${cards}</div>
     </div>
   `;
 }
