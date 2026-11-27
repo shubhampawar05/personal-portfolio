@@ -273,12 +273,26 @@ function renderAiLab() {
   const el = document.querySelector('#ai-lab');
   if (!el) return;
 
-  const cards = aiLabData.items.map(item => `
+  const cards = aiLabData.items.map(item => {
+    const status = item.status ? `<span class="ai-card-status">${item.status}</span>` : '';
+    const tags = item.tags?.length
+      ? `<div class="tech-tags">${item.tags.map(t => `<span class="tech-tag">${t}</span>`).join('')}</div>`
+      : '';
+    const link = item.link
+      ? `<a href="${item.link}" target="_blank" rel="noopener" class="ai-card-link">${getIcon('github')} View code</a>`
+      : '';
+    return `
     <div class="ai-card reveal-element">
-      <div class="ai-card-title">${item.title}</div>
+      <div class="ai-card-head">
+        <div class="ai-card-title">${item.title}</div>
+        ${status}
+      </div>
       <p class="ai-card-desc">${item.description}</p>
+      ${tags}
+      ${link}
     </div>
-  `).join('');
+  `;
+  }).join('');
 
   el.innerHTML = `
     <div class="container">

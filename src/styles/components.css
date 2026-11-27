@@ -976,6 +976,42 @@
   line-height: 1.5;
 }
 
+.ai-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.ai-card-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.ai-card-status {
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: var(--accent-blue-light);
+  white-space: nowrap;
+}
+
+.ai-card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  padding-top: var(--space-4);
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--accent-blue-light);
+  text-decoration: none;
+}
+
+.ai-card-link:hover {
+  text-decoration: underline;
+}
+
 /* ── Exploring ── */
 .exploring-grid {
   display: grid;

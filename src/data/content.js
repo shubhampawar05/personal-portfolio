@@ -196,13 +196,39 @@ export const skillsData = {
 
 export const aiLabData = {
   title: "AI Lab",
-  subtitle: "Experiments, prototypes, and engineering explorations around LLMs, retrieval, voice interfaces, and AI-powered software.",
+  subtitle: "Smaller experiments and prototypes where I learn one idea at a time — each one is real code you can read.",
   items: [
-    { title: "RAG", description: "Retrieval-Augmented Generation experiments for document Q&A and search." },
-    { title: "LLM Applications", description: "Building applications using modern language models and structured outputs." },
-    { title: "Structured Extraction", description: "Converting unstructured information into structured, actionable data." },
-    { title: "Speech-to-Text", description: "Exploring voice-driven software interfaces and meeting transcription." },
-    { title: "AI Agents", description: "Exploring tool-using and workflow-oriented AI systems." }
+    {
+      title: "Advanced RAG Pipeline",
+      description: "Query rewriting (step-back questions and sub-queries) to improve retrieval, with document indexing moved to background workers.",
+      tags: ["Qdrant", "BullMQ", "Redis", "OpenAI"],
+      link: "https://github.com/shubhampawar05/advance-rag-pipeline"
+    },
+    {
+      title: "RAG Lab",
+      description: "Document Q&A with citations, storing embeddings in Postgres with pgvector on Supabase instead of a separate vector DB.",
+      tags: ["pgvector", "Supabase", "TypeScript"],
+      link: "https://github.com/shubhampawar05/ragAi"
+    },
+    {
+      title: "Agent from Scratch",
+      description: "A small tool-using agent in TypeScript — a builder for instructions and tools, and the loop that runs them — without an agent framework.",
+      tags: ["TypeScript", "OpenAI", "Tool Calling"],
+      link: "https://github.com/shubhampawar05/agent-sdk-poc"
+    },
+    {
+      title: "Prompting Fundamentals",
+      description: "Zero-shot, few-shot, chain-of-thought, and chain-of-thought with tools — side by side on the same task.",
+      tags: ["Prompt Engineering", "OpenAI"],
+      link: "https://github.com/shubhampawar05/ChaiCode-Mentors/tree/main/prompting"
+    },
+    {
+      title: "Company AI",
+      status: "In progress",
+      description: "An internal HR assistant built layer by layer — RAG, streaming, memory, MCP tools, RBAC, guardrails and evals — with an architecture decision record for every choice.",
+      tags: ["Python", "FastAPI", "pgvector", "MCP", "Keycloak"],
+      link: null
+    }
   ]
 };
 
