@@ -188,7 +188,7 @@ export const skillsData = {
     { label: "Backend", items: ["Node.js", "Express", "REST APIs", "JWT", "RBAC", "Webhooks"] },
     { label: "Data", items: ["MongoDB", "PostgreSQL", "SQL", "Prisma", "Mongoose", "Redis"] },
     { label: "Infrastructure", items: ["Docker", "AWS", "Kubernetes", "CI/CD", "Vercel", "Git"] },
-    { label: "AI", items: ["OpenAI APIs", "RAG", "LangChain", "Qdrant", "Tool Calling", "LLM Apps", "Speech-to-Text", "Structured Extraction"] }
+    { label: "AI", items: ["OpenAI APIs", "RAG", "LangChain", "Vector DBs (Qdrant)", "Embeddings", "Tool Calling", "Streaming", "Structured Extraction"] }
   ]
 };
 
@@ -207,10 +207,10 @@ export const aiLabData = {
 export const exploringData = {
   title: "Currently Exploring",
   categories: [
-    { label: "System Design", items: ["Distributed Systems", "Caching", "Queues", "API Design"] },
-    { label: "Backend", items: ["PostgreSQL", "Prisma", "Redis", "BullMQ"] },
-    { label: "Infrastructure", items: ["Docker", "Kubernetes", "AWS", "Networking"] },
-    { label: "AI", items: ["RAG", "Vector DBs", "AI Agents", "Ollama"] }
+    { label: "AI Engineering", items: ["AI Agents", "MCP", "Conversation Memory", "Guardrails", "Evals & Observability"] },
+    { label: "Backend", items: ["Python & FastAPI", "pgvector", "Job Queues (BullMQ)", "SSE Streaming"] },
+    { label: "System Design", items: ["Distributed Systems", "Caching", "Model Routing & Fallbacks", "API Design"] },
+    { label: "Infrastructure", items: ["Kubernetes", "AWS", "Networking", "Keycloak & RBAC"] }
   ]
 };
 
