@@ -244,6 +244,34 @@ export const aiLabData = {
   ]
 };
 
+export const notesData = {
+  title: "Notes",
+  subtitle: "Short write-ups of things I learned while building — the decision, why, and what I'd do differently.",
+  items: [
+    {
+      slug: "what-i-learned-building-rag",
+      title: "What I learned building a simple RAG app",
+      date: "2026-11-20",
+      readingTime: "5 min read",
+      summary: "Chunk sizes, why the embedding model must match, and why bad answers are usually a retrieval problem — lessons from building DocChat."
+    },
+    {
+      slug: "never-let-the-llm-write-urls",
+      title: "Never let the LLM write URLs",
+      date: "2026-11-23",
+      readingTime: "4 min read",
+      summary: "How placeholder refs and a server-side swap stopped my persona chatbot from inventing YouTube links — and the streaming bug that came with it."
+    },
+    {
+      slug: "reserve-then-settle-api-metering",
+      title: "Reserve, then settle: metering an API without overspending",
+      date: "2026-11-26",
+      readingTime: "5 min read",
+      summary: "Why checking the balance before a call isn't enough when requests run in parallel, and the two-step pattern NutriKit uses instead."
+    }
+  ]
+};
+
 export const exploringData = {
   title: "Currently Exploring",
   categories: [

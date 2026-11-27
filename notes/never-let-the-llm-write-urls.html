@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Never let the LLM write URLs — Shubham Chopde</title>
+  <meta name="description" content="How placeholder refs and a server-side swap stopped my persona chatbot from inventing YouTube links — and the streaming bug that came with it." />
+  <meta name="theme-color" content="#06080f" />
+  <meta name="author" content="Shubham Chopde" />
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg" />
+  <link rel="canonical" href="https://www.shubhamchopde.in/notes/never-let-the-llm-write-urls.html" />
+  <meta property="og:title" content="Never let the LLM write URLs" />
+  <meta property="og:description" content="How placeholder refs and a server-side swap stopped my persona chatbot from inventing YouTube links — and the streaming bug that came with it." />
+  <meta property="og:type" content="article" />
+  <meta property="og:url" content="https://www.shubhamchopde.in/notes/never-let-the-llm-write-urls.html" />
+  <meta property="og:image" content="https://www.shubhamchopde.in/og-cover.png" />
+  <meta property="article:published_time" content="2026-11-23" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Never let the LLM write URLs" />
+  <meta name="twitter:description" content="How placeholder refs and a server-side swap stopped my persona chatbot from inventing YouTube links — and the streaming bug that came with it." />
+  <meta name="twitter:image" content="https://www.shubhamchopde.in/og-cover.png" />
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Never let the LLM write URLs",
+  "description": "How placeholder refs and a server-side swap stopped my persona chatbot from inventing YouTube links \u2014 and the streaming bug that came with it.",
+  "datePublished": "2026-11-23",
+  "url": "https://www.shubhamchopde.in/notes/never-let-the-llm-write-urls.html",
+  "author": {
+    "@type": "Person",
+    "name": "Shubham Chopde",
+    "url": "https://www.shubhamchopde.in/"
+  }
+}
+  </script>
+</head>
+<body>
+  <header class="note-page-nav">
+    <div class="container nav-container">
+      <a href="../#notes" class="note-back"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> All notes</a>
+      <div class="nav-actions">
+        <button class="theme-toggle" aria-label="Toggle theme" id="theme-toggle"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg></button>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+    <article class="note-article">
+      <header>
+        <p class="note-meta"><time datetime="2026-11-23">Nov 23, 2026</time> · 4 min read · Shubham Chopde</p>
+        <h1>Never let the LLM write URLs</h1>
+        <p class="note-lede">My persona chatbot kept sharing YouTube links that looked real and weren't. Here's the pattern that fixed it: let the model choose, and let code fill in the facts.</p>
+      </header>
+
+      <p>ChaiCode Mentors is a chat app with two AI personas, modelled on the public teaching style of two coding educators. Ask a question and the mentor answers in short, spoken-style Hinglish — and when it helps, shares a video from their own YouTube channel.</p>
+      <p>That last part was the hard bit. The first version had a simple problem: <strong>the links were made up.</strong></p>
+
+      <h2>The problem: plausible but fake links</h2>
+      <p>If you ask an LLM to "share a relevant video", it will produce something that looks exactly like a YouTube link. Sometimes the video ID is invented. Sometimes it's a real video copied with one character wrong. Sometimes it's a real video from a different channel. All of them look fine until a user clicks.</p>
+      <p>Prompting harder ("only share real links!") didn't fix it. The model doesn't know which links are real — it only knows what links look like.</p>
+
+      <h2>Step 1: give the model a tool</h2>
+      <p>Instead of asking the model to remember videos, I gave it a <code>searchYouTube</code> tool that searches only that mentor's channels. The server runs the search with the YouTube Data API, drops deleted or private videos, and returns the results to the model.</p>
+      <p>Tool calling is a loop. The model can answer, or ask for a tool. If it asks, the server runs the tool, adds the result to the conversation, and calls the model again:</p>
+      <pre><code>for (let round = 0; round &lt; 3; round++) {
+  const reply = await callModel(messages, tools);
+  if (!reply.toolCalls.length) return reply;   // final answer
+  for (const call of reply.toolCalls) {
+    messages.push({ role: &#x27;tool&#x27;, tool_call_id: call.id, content: await runTool(call) });
+  }
+}
+throw new Error(&#x27;The model kept calling tools without answering.&#x27;);</code></pre>
+      <p>Two things I learned here. Always cap the rounds — a model can keep calling tools forever. And if anything fails, <strong>roll the conversation history back</strong> to where it was, so a half-finished tool call doesn't corrupt the next message.</p>
+
+      <h2>Step 2: never give the model the URL</h2>
+      <p>Even with real search results, the model could still copy a URL wrong. So the tool result doesn't contain URLs at all. Each video gets a placeholder ref, and the model only sees titles:</p>
+      <pre><code>{ ref: &quot;VIDEO_1&quot;, title: &quot;Complete Git and GitHub course&quot; }
+note: &quot;To share a video, write its ref exactly, e.g. {{VIDEO_1}}.
+       It becomes the real link automatically. Never write a URL yourself.&quot;</code></pre>
+      <p>The server keeps a map from <code>VIDEO_1</code> to the real video. When the answer comes back, it swaps <code>{{VIDEO_1}}</code> for a video card with the verified link and thumbnail. If the model writes a ref that doesn't exist — or types a YouTube URL anyway — the server replaces it with a card for the mentor's channel. The UI can never show a broken link.</p>
+      <p>The general lesson: <strong>let the model choose, let code produce the facts.</strong> The model is great at deciding which video fits the question. It's bad at reproducing an 11-character ID exactly. So it picks, and the server fills in.</p>
+
+      <h2>The streaming bug that came with it</h2>
+      <p>Replies stream to the browser word by word. That broke the placeholders in a way I didn't expect: tokens don't respect my syntax, so a ref can arrive split in two —</p>
+      <pre><code>chunk 1: &quot;Yeh video dekho {{VID&quot;
+chunk 2: &quot;EO_1}} — isme sab hai&quot;</code></pre>
+      <p>If I forward chunk 1 straight away, the user briefly sees <code>{{VID</code> on screen. The fix is to <strong>hold back anything after an unclosed <code>{{</code></strong> until the closing <code>}}</code> arrives, then send it with the ref already swapped. When the stream ends, the server sends the final cleaned text, and the browser replaces what it streamed with that — so the final render is always the source of truth.</p>
+
+      <h2>What else I'd keep from this project</h2>
+      <ul>
+        <li><strong>A persona lives in the system prompt.</strong> The voices only felt distinct after I researched each mentor's public talks and posts and wrote down their actual phrases and habits.</li>
+        <li><strong>Public AI apps need rate limits.</strong> Every message costs money, so each visitor gets a per-minute and per-day limit.</li>
+        <li><strong>Say clearly what it is.</strong> The app states that these are AI simulations built from public content, not the real people.</li>
+      </ul>
+
+      <footer class="note-footer">
+        <a href="https://github.com/shubhampawar05/ChaiCode-Mentors" target="_blank" rel="noopener" class="btn-outline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4"/><path d="M9 18c-4.51 2-5-2-7-2"/></svg> ChaiCode Mentors on GitHub</a>
+        <a href="../#notes" class="btn-outline"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg> More notes</a>
+      </footer>
+    </article>
+  </main>
+
+  <script type="module" src="/src/notes.js"></script>
+</body>
+</html>

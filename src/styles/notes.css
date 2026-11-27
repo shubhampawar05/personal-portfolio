@@ -1,0 +1,144 @@
+/* Styles for the standalone note pages in /notes. */
+
+.note-page-nav {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg-glass);
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+
+.note-page-nav .nav-container {
+  height: var(--nav-height);
+}
+
+.note-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  text-decoration: none;
+}
+
+.note-back:hover {
+  color: var(--text-primary);
+}
+
+.note-back svg {
+  transform: rotate(180deg);
+}
+
+.note-article {
+  max-width: 68ch;
+  margin: 0 auto;
+  padding: var(--space-12) var(--space-5) var(--space-16);
+}
+
+.note-article header {
+  margin-bottom: var(--space-8);
+}
+
+.note-meta {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+}
+
+.note-article h1 {
+  font-size: clamp(1.75rem, 4vw, 2.4rem);
+  line-height: 1.2;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: var(--space-4);
+}
+
+.note-lede {
+  font-size: 1.1rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+
+.note-article h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: var(--space-10) 0 var(--space-3);
+}
+
+.note-article p,
+.note-article li {
+  font-size: 1rem;
+  line-height: 1.75;
+  color: var(--text-secondary);
+}
+
+.note-article p {
+  margin-bottom: var(--space-4);
+}
+
+.note-article ul,
+.note-article ol {
+  margin: 0 0 var(--space-4) var(--space-5);
+  padding-left: var(--space-2);
+}
+
+.note-article ul { list-style: disc; }
+.note-article ol { list-style: decimal; }
+
+.note-article li::marker {
+  color: var(--accent-blue-light);
+}
+
+.note-article li {
+  margin-bottom: var(--space-2);
+}
+
+.note-article strong {
+  color: var(--text-primary);
+}
+
+.note-article a {
+  color: var(--accent-blue-light);
+}
+
+.note-article code {
+  font-family: var(--font-mono);
+  font-size: 0.88em;
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+  background: var(--accent-blue-subtle);
+  color: var(--text-primary);
+}
+
+.note-article pre {
+  margin: 0 0 var(--space-5);
+  padding: var(--space-4);
+  border-radius: var(--radius-md, 10px);
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-card);
+  overflow-x: auto;
+}
+
+.note-article pre code {
+  padding: 0;
+  background: none;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.note-footer {
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-subtle);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+}
+
+[data-theme="light"] .note-article pre {
+  background: #ffffff;
+  border-color: var(--border-medium);
+}

@@ -20,6 +20,7 @@ const TARGETS = {
   '#projects': '<section id="projects">',
   '#skills': '<section id="skills">',
   '#ai-lab': '<section id="ai-lab">',
+  '#notes': '<section id="notes">',
   '#exploring': '<section id="exploring">',
   '#achievements': '<section id="achievements">',
   '#contact': '<section id="contact">',
