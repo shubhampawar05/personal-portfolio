@@ -1,6 +1,8 @@
 import { defineConfig } from 'vite';
+import { prerenderSections } from './scripts/prerender-plugin.js';
 
 export default defineConfig({
+  plugins: [prerenderSections()],
   base: './',
   root: './',
   publicDir: 'public',
