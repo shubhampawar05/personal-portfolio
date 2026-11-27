@@ -201,12 +201,27 @@ function renderFeaturedProject(p) {
 }
 
 function renderProjectCard(p) {
+  const learnings = p.learnings?.length
+    ? `
+      <div class="project-card-learned">What I learned</div>
+      <ul class="project-highlights">${p.learnings.map(l => `<li>${l}</li>`).join('')}</ul>
+    `
+    : '';
+  const cardActions = [];
+  if (p.links?.live) cardActions.push(`<a href="${p.links.live}" target="_blank" rel="noopener" class="btn-primary">${getIcon('external')} Live Demo</a>`);
+  if (p.links?.github) cardActions.push(`<a href="${p.links.github}" target="_blank" rel="noopener" class="btn-outline">${getIcon('github')} GitHub</a>`);
+  const github = cardActions.length
+    ? `<div class="project-card-actions">${cardActions.join('')}</div>`
+    : '';
+
   return `
     <div class="project-card reveal-element">
       <div class="project-card-category">${p.category}</div>
       <h3 class="type-h2" style="margin-bottom:8px">${p.title}</h3>
       <p class="type-body" style="font-size:0.9rem;margin-bottom:16px">${p.tagline}</p>
-      <div class="tech-tags">${p.technologies.slice(0, 4).map(t => `<span class="tech-tag">${t}</span>`).join('')}</div>
+      ${learnings}
+      <div class="tech-tags">${p.technologies.slice(0, 5).map(t => `<span class="tech-tag">${t}</span>`).join('')}</div>
+      ${github}
     </div>
   `;
 }
@@ -223,7 +238,7 @@ function renderProjects() {
       <div class="section-header reveal-element">
         <span class="type-caption">Projects</span>
         <h2 class="type-h1">Featured work</h2>
-        <p class="section-subtitle">Production-grade applications spanning SaaS, AI, and e-commerce.</p>
+        <p class="section-subtitle">Production work, SaaS products, and hands-on AI builds.</p>
       </div>
       ${featured.map(renderFeaturedProject).join('')}
       <div class="projects-grid">${rest.map(renderProjectCard).join('')}</div>

@@ -124,34 +124,61 @@ export const projectsData = [
     }
   },
   {
-    id: "acumatic",
-    featured: false,
-    category: "FinTech",
-    title: "Financial Data Platform",
-    tagline: "Production financial processing and reporting workflows at scale.",
-    description: "Engineered end-to-end data pipelines transforming complex business documents into accurate financial reports with customer-specific business rules.",
+    id: "nutrikit",
+    featured: true,
+    category: "API Platform",
+    title: "NutriKit",
+    tagline: "Self-hostable nutrition API — describe a meal in text, voice or a photo and get matched foods, real portions and 33 nutrients.",
+    description: "A full developer platform around a nutrition API: website, docs, developer portal, a JavaScript SDK on npm, and an MCP server so AI clients can use it.",
     highlights: [
-      "Document-to-report data pipelines",
-      "Customer-specific business rules",
-      "Accounting system migration support"
+      "Search 14,000+ foods from USDA, UK CoFID, the Indian Nutrient Databank and Open Food Facts",
+      "Meal logging from text, voice and photos, plus barcode and nutrition-label scanning",
+      "Meal plans for 6 diets and portion-aware nutrients (\"2 medium\", \"1.5 cups\")",
+      "API keys, usage metering and Razorpay payments — published SDK as @nutrikit/sdk"
     ],
-    technologies: ["React", "Redux", "TypeScript", "Node.js", "REST APIs"],
-    links: { live: null, demo: null, github: null }
+    previewImage: "./projects/nutrikit/home.webp",
+    architecture: [
+      "Single Fastify + TypeScript process serving the REST API, website and developer portal",
+      "PostgreSQL for accounts, keys, usage and payments; read-only SQLite catalog with full-text search",
+      "Claude / OpenAI only for photo and label features, so the core API runs without AI",
+      "React + Vite web app, JS SDK, MCP server, and Playwright end-to-end tests"
+    ],
+    technologies: ["TypeScript", "Fastify", "PostgreSQL", "SQLite", "React", "MCP"],
+    links: {
+      live: "https://nutrikit.onrender.com",
+      demo: null,
+      github: "https://github.com/shubhampawar05/nutrikit"
+    }
   },
   {
-    id: "wunderkind",
+    id: "docchat-rag",
     featured: false,
-    category: "Migration",
-    title: "Production Feature Migration",
-    tagline: "Modernizing a legacy product workflow for enterprise marketers.",
-    description: "Migrated On-Demand Text Campaign feature from legacy Connect UI to new platform, handling UI, API integration, and data transformation.",
-    highlights: [
-      "Legacy-to-modern React migration",
-      "Complex Redux state management",
-      "Zero-disruption production cutover"
+    category: "AI · RAG",
+    title: "DocChat — Simple RAG",
+    tagline: "Upload a PDF or text file and chat with it. Answers come only from your documents, with page-level citations.",
+    learnings: [
+      "Chunking is a tradeoff: ~1,000-char chunks with 200-char overlap keep sentences intact without blurring topics together",
+      "Questions must be embedded with the same model used at indexing, or the vectors don't line up",
+      "Check similarity scores first — when answers are bad, it's usually retrieval, not the LLM",
+      "A strict \"use only the context, cite the page\" prompt with temperature 0 is what stops hallucinated answers"
     ],
-    technologies: ["React", "Redux", "TypeScript", "REST APIs"],
-    links: { live: null, demo: null, github: null }
+    technologies: ["Node.js", "LangChain", "OpenAI", "Qdrant", "Express"],
+    links: { live: "https://genaisimple-rag.onrender.com", demo: null, github: "https://github.com/shubhampawar05/GenAiSimple-RAG" }
+  },
+  {
+    id: "chaicode-mentors",
+    featured: false,
+    category: "AI · Persona",
+    title: "ChaiCode Mentors — AI Personas",
+    tagline: "Chat with AI personas modelled on the public teaching style of two coding educators, with streamed Hinglish replies and real YouTube video suggestions.",
+    learnings: [
+      "A persona lives in the system prompt — researching real public content made the voices feel distinct",
+      "Tool calling: the model searches YouTube via a tool, and the server runs the loop until it answers",
+      "Never let the model write URLs: {{VIDEO_n}} placeholders get swapped for verified links server-side",
+      "Streaming means handling tokens that split mid-placeholder, and rate limits protect API credits in public"
+    ],
+    technologies: ["Node.js", "OpenAI", "Tool Calling", "YouTube API", "Streaming"],
+    links: { live: "https://chaicode-mentors.onrender.com", demo: null, github: "https://github.com/shubhampawar05/ChaiCode-Mentors" }
   }
 ];
 
@@ -161,7 +188,7 @@ export const skillsData = {
     { label: "Backend", items: ["Node.js", "Express", "REST APIs", "JWT", "RBAC", "Webhooks"] },
     { label: "Data", items: ["MongoDB", "PostgreSQL", "SQL", "Prisma", "Mongoose", "Redis"] },
     { label: "Infrastructure", items: ["Docker", "AWS", "Kubernetes", "CI/CD", "Vercel", "Git"] },
-    { label: "AI", items: ["OpenAI APIs", "RAG", "LLM Apps", "Speech-to-Text", "Structured Extraction"] }
+    { label: "AI", items: ["OpenAI APIs", "RAG", "LangChain", "Qdrant", "Tool Calling", "LLM Apps", "Speech-to-Text", "Structured Extraction"] }
   ]
 };
 

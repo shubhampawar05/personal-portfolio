@@ -859,6 +859,30 @@
   margin-bottom: var(--space-2);
 }
 
+.project-card {
+  display: flex;
+  flex-direction: column;
+}
+
+.project-card-learned {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.project-card .project-highlights {
+  margin-bottom: var(--space-2);
+}
+
+.project-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: auto;
+  padding-top: var(--space-4);
+}
+
 /* ── Skills ── */
 .skills-grid {
   display: grid;
