@@ -13,7 +13,7 @@ export const heroData = {
   lastName: "Chopde",
   title: "Software Engineer",
   location: "Gurugram, India",
-  headline: "Building scalable SaaS products, modern web applications, and enterprise-grade solutions with React, Next.js, Node.js, and TypeScript.",
+  headline: "Full-stack engineer building SaaS products, developer APIs, and AI-powered apps — from React frontends and Node.js backends to RAG pipelines and LLM tool calling.",
   subheadline: "Software Engineer building scalable web applications and AI-powered products.",
   available: true
 };
@@ -26,7 +26,9 @@ export const heroTechStack = [
   { name: "MongoDB", color: "#47A248" },
   { name: "Tailwind CSS", color: "#38BDF8" },
   { name: "Docker", color: "#2496ED" },
-  { name: "AWS", color: "#FF9900" }
+  { name: "AWS", color: "#FF9900" },
+  { name: "OpenAI", color: "#10A37F" },
+  { name: "LangChain", color: "#7FC8A9" }
 ];
 
 export const aboutData = {
